@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas Protocol - Advertiser Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f5f7fa;
+            color: #1a1a1a;
+        }
+
+        .header {
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 20px;
+            font-weight: 700;
+            color: #0052FF;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .wallet-btn {
+            background: #f0f4ff;
+            color: #0052FF;
+            border: 1px solid #0052FF;
+            padding: 10px 18px;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .wallet-btn:hover {
+            background: #0052FF;
+            color: white;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: #0052FF;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            font-size: 28px;
+            color: #1a1a1a;
+        }
+
+        .create-btn {
+            background: #0052FF;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .create-btn:hover {
+            background: #0041CC;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,82,255,0.3);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .stat-change {
+            font-size: 12px;
+            color: #10b981;
+            margin-top: 4px;
+        }
+
+        .campaigns-section {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e0e0e0;
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 20px 30px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-header h2 {
+            font-size: 18px;
+            color: #1a1a1a;
+        }
+
+        .campaigns-list {
+            padding: 20px 30px;
+        }
+
+        .campaign-card {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 24px;
+            margin-bottom: 16px;
+            transition: all 0.2s;
+        }
+
+        .campaign-card:hover {
+            border-color: #0052FF;
+            box-shadow: 0 2px 8px rgba(0,82,255,0.1);
+        }
+
+        .campaign-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 20px;
+        }
+
+        .campaign-info h3 {
+            font-size: 18px;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+
+        .campaign-info p {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .campaign-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .campaign-metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .metric {
+            text-align: center;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+        }
+
+        .metric-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+
+        .metric-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #0052FF;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            padding: 30px 30px 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .modal-header h2 {
+            font-size: 24px;
+            color: #1a1a1a;
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #0052FF;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .form-row-three {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+        }
+
+        .form-note {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        .modal-footer {
+            padding: 20px 30px;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #0052FF;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0041CC;
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #666;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .wallet-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .wallet-address {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 12px;
+            padding: 12px;
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+        }
+
+        .address-text {
+            flex: 1;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            color: #1a1a1a;
+            word-break: break-all;
+        }
+
+        .copy-btn {
+            background: #0052FF;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .copy-btn:hover {
+            background: #0041CC;
+        }
+
+        .copy-btn.copied {
+            background: #10b981;
+        }
+
+        .network-badge {
+            display: inline-block;
+            background: #0052FF;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .campaign-metrics {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row,
+            .form-row-three {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <span>🎨</span>
+            <span>Canvas Protocol</span>
+        </div>
+        <div class="user-info">
+            <button class="wallet-btn" onclick="openWalletModal()">
+                <span>💰</span>
+                <span>Fund Wallet</span>
+            </button>
+            <span style="color: #666; font-size: 14px;">Nike Marketing</span>
+            <div class="user-avatar">N</div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>Campaign Dashboard</h1>
+            <button class="create-btn" onclick="openModal()">
+                <span>+</span>
+                <span>Create Campaign</span>
+            </button>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Total Budget</div>
+                <div class="stat-value" id="totalBudget">$0</div>
+                <div class="stat-change">All campaigns</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Budget Spent</div>
+                <div class="stat-value" id="budgetSpent">$0</div>
+                <div class="stat-change">↑ Active spending</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total Impressions</div>
+                <div class="stat-value" id="totalImpressions">0</div>
+                <div class="stat-change">Ads shown</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Completions</div>
+                <div class="stat-value" id="totalCompletions">0</div>
+                <div class="stat-change">CAPTCHAs completed</div>
+            </div>
+        </div>
+
+        <div class="campaigns-section">
+            <div class="section-header">
+                <h2>Active Campaigns</h2>
+            </div>
+            <div class="campaigns-list" id="campaignsList">
+                <div class="empty-state">
+                    <div class="empty-state-icon">📊</div>
+                    <h3>No campaigns yet</h3>
+                    <p>Create your first campaign to start advertising on Canvas Protocol</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Wallet Funding Modal -->
+    <div class="modal" id="walletModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Fund Your Wallet</h2>
+            </div>
+            <div class="modal-body">
+                <div class="wallet-info">
+                    <p style="font-size: 14px; color: #666; margin-bottom: 12px;">
+                        Send USDC to this address to fund your campaign wallet. Funds will be available immediately after confirmation.
+                    </p>
+                    <div class="network-badge">Base Network</div>
+                    <div class="wallet-address">
+                        <div class="address-text" id="walletAddress">0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb8</div>
+                        <button class="copy-btn" id="copyBtn" onclick="copyAddress()">Copy</button>
+                    </div>
+                    <p style="font-size: 12px; color: #666; margin-top: 12px;">
+                        <strong>Important:</strong> Only send USDC on Base network. Sending other tokens or using different networks may result in loss of funds.
+                    </p>
+                </div>
+                <div style="background: #fff4e6; border: 1px solid #ffa726; border-radius: 8px; padding: 16px;">
+                    <p style="font-size: 13px; color: #e65100; margin-bottom: 8px;"><strong>⚠️ Coming Soon</strong></p>
+                    <p style="font-size: 12px; color: #666;">
+                        In the next update, this dashboard will automatically display your current wallet balance and transaction history.
+                    </p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="closeWalletModal()">Got it</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Campaign Modal -->
+    <div class="modal" id="createModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Create New Campaign</h2>
+            </div>
+            <div class="modal-body">
+                <form id="campaignForm">
+                    <div class="form-group">
+                        <label>Campaign Name *</label>
+                        <input type="text" id="campaignName" placeholder="e.g., Summer 2025 Launch" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Brand Name *</label>
+                        <input type="text" id="brandName" placeholder="e.g., Nike" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Tagline *</label>
+                        <input type="text" id="tagline" placeholder="e.g., Just Do It" required>
+                        <div class="form-note">Short message to appear with your ad</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Select CAPTCHA Type *</label>
+                        <select id="captchaType" required>
+                            <option value="">Choose a CAPTCHA...</option>
+                            <option value="crypto-vault">🔐 Crypto Vault - Collect Bitcoin</option>
+                            <option value="memory-match">🎴 Memory Match - Match Pairs</option>
+                            <option value="puzzle-slide">🧩 Slide Puzzle - Complete Image</option>
+                            <option value="color-sort">🎨 Color Sort - Match Colors</option>
+                            <option value="word-scramble">📝 Word Scramble - Unscramble Word</option>
+                        </select>
+                        <div class="form-note">Pre-approved CAPTCHAs (manually reviewed for safety)</div>
+                    </div>
+
+                    <div class="form-row-three">
+                        <div class="form-group">
+                            <label>Campaign Budget (USDC) *</label>
+                            <input type="number" id="budget" placeholder="1000" min="100" step="100" required>
+                            <div class="form-note">Locked onchain</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Duration (Days) *</label>
+                            <input type="number" id="duration" placeholder="30" min="1" max="365" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Price per CAPTCHA *</label>
+                            <input type="number" id="pricePerCaptcha" placeholder="0.05" min="0.01" step="0.01" value="0.05" required>
+                            <div class="form-note">In USD (e.g., 0.05 = 5¢)</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Campaign Description</label>
+                        <textarea id="description" placeholder="Brief description of your campaign..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="createCampaign()">Launch Campaign</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data storage
+        let campaigns = [];
+
+        // Load campaigns from localStorage
+        function loadCampaigns() {
+            const saved = localStorage.getItem('canvasCampaigns');
+            if (saved) {
+                campaigns = JSON.parse(saved);
+                renderCampaigns();
+                updateStats();
+            }
+        }
+
+        // Save campaigns to localStorage
+        function saveCampaigns() {
+            localStorage.setItem('canvasCampaigns', JSON.stringify(campaigns));
+        }
+
+        function openWalletModal() {
+            document.getElementById('walletModal').classList.add('active');
+        }
+
+        function closeWalletModal() {
+            document.getElementById('walletModal').classList.remove('active');
+        }
+
+        function copyAddress() {
+            const address = document.getElementById('walletAddress').textContent;
+            const btn = document.getElementById('copyBtn');
+            
+            navigator.clipboard.writeText(address).then(() => {
+                btn.textContent = 'Copied!';
+                btn.classList.add('copied');
+                
+                setTimeout(() => {
+                    btn.textContent = 'Copy';
+                    btn.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        function openModal() {
+            document.getElementById('createModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('createModal').classList.remove('active');
+            document.getElementById('campaignForm').reset();
+            // Reset price per CAPTCHA to default
+            document.getElementById('pricePerCaptcha').value = '0.05';
+        }
+
+        function createCampaign() {
+            const form = document.getElementById('campaignForm');
+            
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            const campaign = {
+                id: Date.now(),
+                name: document.getElementById('campaignName').value,
+                brand: document.getElementById('brandName').value,
+                tagline: document.getElementById('tagline').value,
+                captchaType: document.getElementById('captchaType').value,
+                budget: parseFloat(document.getElementById('budget').value),
+                duration: parseInt(document.getElementById('duration').value),
+                pricePerCaptcha: parseFloat(document.getElementById('pricePerCaptcha').value),
+                description: document.getElementById('description').value,
+                spent: 0,
+                impressions: 0,
+                completions: 0,
+                status: 'active',
+                createdAt: new Date().toISOString()
+            };
+
+            campaigns.push(campaign);
+            saveCampaigns();
+            renderCampaigns();
+            updateStats();
+            closeModal();
+        }
+
+        function renderCampaigns() {
+            const container = document.getElementById('campaignsList');
+            
+            if (campaigns.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📊</div>
+                        <h3>No campaigns yet</h3>
+                        <p>Create your first campaign to start advertising on Canvas Protocol</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = campaigns.map(campaign => {
+                const captchaNames = {
+                    'crypto-vault': 'Crypto Vault',
+                    'memory-match': 'Memory Match',
+                    'puzzle-slide': 'Slide Puzzle',
+                    'color-sort': 'Color Sort',
+                    'word-scramble': 'Word Scramble'
+                };
+
+                return `
+                    <div class="campaign-card">
+                        <div class="campaign-header">
+                            <div class="campaign-info">
+                                <h3>${campaign.name}</h3>
+                                <p>${campaign.brand} • ${captchaNames[campaign.captchaType]} • ${campaign.duration} days • $${campaign.pricePerCaptcha.toFixed(2)}/CAPTCHA</p>
+                            </div>
+                            <span class="campaign-status status-active">Active</span>
+                        </div>
+                        <div class="campaign-metrics">
+                            <div class="metric">
+                                <div class="metric-label">Budget Spent</div>
+                                <div class="metric-value">$${campaign.spent.toFixed(2)}</div>
+                                <div style="font-size: 11px; color: #666; margin-top: 2px;">of $${campaign.budget}</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Impressions</div>
+                                <div class="metric-value">${campaign.impressions.toLocaleString()}</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Completions</div>
+                                <div class="metric-value">${campaign.completions.toLocaleString()}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateStats() {
+            const totalBudget = campaigns.reduce((sum, c) => sum + c.budget, 0);
+            const budgetSpent = campaigns.reduce((sum, c) => sum + c.spent, 0);
+            const totalImpressions = campaigns.reduce((sum, c) => sum + c.impressions, 0);
+            const totalCompletions = campaigns.reduce((sum, c) => sum + c.completions, 0);
+
+            document.getElementById('totalBudget').textContent = `$${totalBudget.toLocaleString()}`;
+            document.getElementById('budgetSpent').textContent = `$${budgetSpent.toFixed(2)}`;
+            document.getElementById('totalImpressions').textContent = totalImpressions.toLocaleString();
+            document.getElementById('totalCompletions').textContent = totalCompletions.toLocaleString();
+        }
+
+        // Close modals when clicking outside
+        document.getElementById('createModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        document.getElementById('walletModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeWalletModal();
+            }
+        });
+
+        // Load campaigns on page load
+        loadCampaigns();
+
+        // Demo: Simulate some activity
+        function simulateActivity() {
+            if (campaigns.length > 0) {
+                campaigns.forEach(campaign => {
+                    // Randomly add impressions and completions
+                    if (Math.random() > 0.7) {
+                        campaign.impressions += Math.floor(Math.random() * 5);
+                        const newCompletions = Math.floor(Math.random() * 2);
+                        campaign.completions += newCompletions;
+                        // Use the campaign's custom price per CAPTCHA
+                        campaign.spent += newCompletions * campaign.pricePerCaptcha;
+                    }
+                });
+                saveCampaigns();
+                renderCampaigns();
+                updateStats();
+            }
+        }
+
+        // Simulate activity every 10 seconds for demo purposes
+        setInterval(simulateActivity, 10000);
+    </script>
+</body>
+</html>
