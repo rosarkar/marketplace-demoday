@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Canvas Protocol - Advertiser Dashboard</title>
+    <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -61,6 +62,12 @@
             color: white;
         }
 
+        .wallet-btn.connected {
+            background: #d4edda;
+            color: #155724;
+            border-color: #155724;
+        }
+
         .user-avatar {
             width: 40px;
             height: 40px;
@@ -110,6 +117,12 @@
             background: #0041CC;
             transform: translateY(-1px);
             box-shadow: 0 4px 12px rgba(0,82,255,0.3);
+        }
+
+        .create-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
         }
 
         .stats-grid {
@@ -214,6 +227,16 @@
             color: #155724;
         }
 
+        .status-paused {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-completed {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
         .campaign-metrics {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -236,7 +259,7 @@
         .metric-value {
             font-size: 20px;
             font-weight: 700;
-            color: #0052FF;
+            color: #1a1a1a;
         }
 
         .modal {
@@ -246,7 +269,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0,0,0,0.5);
             z-index: 1000;
             align-items: center;
             justify-content: center;
@@ -259,19 +282,20 @@
         .modal-content {
             background: white;
             border-radius: 16px;
-            width: 90%;
             max-width: 600px;
+            width: 90%;
             max-height: 90vh;
             overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
 
         .modal-header {
-            padding: 30px 30px 20px;
+            padding: 24px 30px;
             border-bottom: 1px solid #e0e0e0;
         }
 
         .modal-header h2 {
-            font-size: 24px;
+            font-size: 22px;
             color: #1a1a1a;
         }
 
@@ -279,13 +303,21 @@
             padding: 30px;
         }
 
+        .modal-footer {
+            padding: 20px 30px;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
         .form-group {
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
         .form-group label {
             display: block;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             color: #1a1a1a;
             margin-bottom: 8px;
@@ -300,31 +332,11 @@
             border-radius: 8px;
             font-size: 14px;
             font-family: inherit;
-            transition: border-color 0.2s;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #0052FF;
         }
 
         .form-group textarea {
             resize: vertical;
             min-height: 80px;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-        }
-
-        .form-row-three {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 16px;
         }
 
         .form-note {
@@ -333,16 +345,14 @@
             margin-top: 4px;
         }
 
-        .modal-footer {
-            padding: 20px 30px;
-            border-top: 1px solid #e0e0e0;
-            display: flex;
-            gap: 12px;
-            justify-content: flex-end;
+        .form-row-three {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
         }
 
         .btn {
-            padding: 12px 24px;
+            padding: 10px 20px;
             border: none;
             border-radius: 8px;
             font-size: 14px;
@@ -360,9 +370,14 @@
             background: #0041CC;
         }
 
+        .btn-primary:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
         .btn-secondary {
-            background: #f5f5f5;
-            color: #666;
+            background: #f5f7fa;
+            color: #1a1a1a;
         }
 
         .btn-secondary:hover {
@@ -372,110 +387,94 @@
         .empty-state {
             text-align: center;
             padding: 60px 20px;
-            color: #666;
         }
 
         .empty-state-icon {
-            font-size: 48px;
-            margin-bottom: 16px;
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .empty-state h3 {
+            font-size: 20px;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+            color: #666;
         }
 
         .wallet-info {
             background: #f8f9fa;
             padding: 20px;
-            border-radius: 10px;
+            border-radius: 8px;
             margin-bottom: 20px;
         }
 
         .wallet-address {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-top: 12px;
-            padding: 12px;
-            background: white;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-        }
-
-        .address-text {
-            flex: 1;
-            font-family: 'Courier New', monospace;
-            font-size: 13px;
-            color: #1a1a1a;
+            font-family: monospace;
+            font-size: 14px;
             word-break: break-all;
+            margin: 10px 0;
         }
 
-        .copy-btn {
-            background: #0052FF;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .tx-hash {
+            font-family: monospace;
             font-size: 12px;
-            font-weight: 600;
-            transition: all 0.2s;
-            white-space: nowrap;
-        }
-
-        .copy-btn:hover {
-            background: #0041CC;
-        }
-
-        .copy-btn.copied {
-            background: #10b981;
-        }
-
-        .network-badge {
-            display: inline-block;
-            background: #0052FF;
-            color: white;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 600;
+            word-break: break-all;
+            background: white;
+            padding: 8px;
+            border-radius: 4px;
             margin-top: 8px;
-        }
-
-        @media (max-width: 768px) {
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .campaign-metrics {
-                grid-template-columns: 1fr;
-            }
-
-            .form-row,
-            .form-row-three {
-                grid-template-columns: 1fr;
-            }
         }
     </style>
 </head>
 <body>
     <div class="header">
         <div class="logo">
-            <span>🎨</span>
-            <span>Canvas Protocol</span>
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+                <rect width="24" height="24" rx="6"/>
+            </svg>
+            Canvas Protocol
         </div>
         <div class="user-info">
-            <button class="wallet-btn" onclick="openWalletModal()">
-                <span>💰</span>
-                <span>Fund Wallet</span>
+            <button class="wallet-btn" id="walletBtn" onclick="connectWallet()">
+                🔌 Connect Wallet
             </button>
-            <span style="color: #666; font-size: 14px;">Nike Marketing</span>
-            <div class="user-avatar">N</div>
+            <div class="user-avatar" id="userAvatar" style="display: none;">A</div>
         </div>
     </div>
 
     <div class="container">
         <div class="page-header">
-            <h1>Campaign Dashboard</h1>
-            <button class="create-btn" onclick="openModal()">
-                <span>+</span>
-                <span>Create Campaign</span>
+            <h1>Advertiser Dashboard</h1>
+            <button class="create-btn" id="createCampaignBtn" onclick="openModal()" disabled>
+                <span>+</span> Create Campaign
             </button>
         </div>
 
@@ -483,68 +482,30 @@
             <div class="stat-card">
                 <div class="stat-label">Total Budget</div>
                 <div class="stat-value" id="totalBudget">$0</div>
-                <div class="stat-change">All campaigns</div>
+                <div class="stat-change">Across all campaigns</div>
             </div>
             <div class="stat-card">
                 <div class="stat-label">Budget Spent</div>
                 <div class="stat-value" id="budgetSpent">$0</div>
-                <div class="stat-change">↑ Active spending</div>
+                <div class="stat-change">Onchain verified</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">Total Impressions</div>
-                <div class="stat-value" id="totalImpressions">0</div>
-                <div class="stat-change">Ads shown</div>
+                <div class="stat-label">Active Campaigns</div>
+                <div class="stat-value" id="activeCampaigns">0</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">Completions</div>
+                <div class="stat-label">Completed Ads</div>
                 <div class="stat-value" id="totalCompletions">0</div>
-                <div class="stat-change">CAPTCHAs completed</div>
+                <div class="stat-change">Total CAPTCHA completions</div>
             </div>
         </div>
 
         <div class="campaigns-section">
             <div class="section-header">
-                <h2>Active Campaigns</h2>
+                <h2>Your Campaigns</h2>
             </div>
             <div class="campaigns-list" id="campaignsList">
-                <div class="empty-state">
-                    <div class="empty-state-icon">📊</div>
-                    <h3>No campaigns yet</h3>
-                    <p>Create your first campaign to start advertising on Canvas Protocol</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Wallet Funding Modal -->
-    <div class="modal" id="walletModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Fund Your Wallet</h2>
-            </div>
-            <div class="modal-body">
-                <div class="wallet-info">
-                    <p style="font-size: 14px; color: #666; margin-bottom: 12px;">
-                        Send USDC to this address to fund your campaign wallet. Funds will be available immediately after confirmation.
-                    </p>
-                    <div class="network-badge">Base Network</div>
-                    <div class="wallet-address">
-                        <div class="address-text" id="walletAddress">0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb8</div>
-                        <button class="copy-btn" id="copyBtn" onclick="copyAddress()">Copy</button>
-                    </div>
-                    <p style="font-size: 12px; color: #666; margin-top: 12px;">
-                        <strong>Important:</strong> Only send USDC on Base network. Sending other tokens or using different networks may result in loss of funds.
-                    </p>
-                </div>
-                <div style="background: #fff4e6; border: 1px solid #ffa726; border-radius: 8px; padding: 16px;">
-                    <p style="font-size: 13px; color: #e65100; margin-bottom: 8px;"><strong>⚠️ Coming Soon</strong></p>
-                    <p style="font-size: 12px; color: #666;">
-                        In the next update, this dashboard will automatically display your current wallet balance and transaction history.
-                    </p>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-primary" onclick="closeWalletModal()">Got it</button>
+                <div class="loading">Connect your wallet to view campaigns</div>
             </div>
         </div>
     </div>
@@ -556,21 +517,21 @@
                 <h2>Create New Campaign</h2>
             </div>
             <div class="modal-body">
+                <div id="modalMessage"></div>
                 <form id="campaignForm">
                     <div class="form-group">
                         <label>Campaign Name *</label>
-                        <input type="text" id="campaignName" placeholder="e.g., Summer 2025 Launch" required>
+                        <input type="text" id="campaignName" placeholder="Spring Product Launch" required>
                     </div>
 
                     <div class="form-group">
                         <label>Brand Name *</label>
-                        <input type="text" id="brandName" placeholder="e.g., Nike" required>
+                        <input type="text" id="brandName" placeholder="Your Brand" required>
                     </div>
 
                     <div class="form-group">
-                        <label>Tagline *</label>
-                        <input type="text" id="tagline" placeholder="e.g., Just Do It" required>
-                        <div class="form-note">Short message to appear with your ad</div>
+                        <label>Campaign Tagline</label>
+                        <input type="text" id="tagline" placeholder="A catchy tagline for your campaign">
                     </div>
 
                     <div class="form-group">
@@ -588,8 +549,8 @@
 
                     <div class="form-row-three">
                         <div class="form-group">
-                            <label>Campaign Budget (USDC) *</label>
-                            <input type="number" id="budget" placeholder="1000" min="100" step="100" required>
+                            <label>Campaign Budget (USD) *</label>
+                            <input type="number" id="budget" placeholder="1000" min="10" step="10" required>
                             <div class="form-note">Locked onchain</div>
                         </div>
 
@@ -599,9 +560,9 @@
                         </div>
 
                         <div class="form-group">
-                            <label>Price per CAPTCHA *</label>
+                            <label>Price per CAPTCHA (USD) *</label>
                             <input type="number" id="pricePerCaptcha" placeholder="0.05" min="0.01" step="0.01" value="0.05" required>
-                            <div class="form-note">In USD (e.g., 0.05 = 5¢)</div>
+                            <div class="form-note">e.g., 0.05 = 5¢</div>
                         </div>
                     </div>
 
@@ -613,65 +574,142 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-                <button class="btn btn-primary" onclick="createCampaign()">Launch Campaign</button>
+                <button class="btn btn-primary" id="launchBtn" onclick="createCampaign()">Launch Campaign</button>
             </div>
         </div>
     </div>
 
     <script>
-        // Sample data storage
+        // Configuration
+        const API_BASE_URL = 'http://localhost:8080';
+        const ETH_USD_RATE = 3000; // Approximate ETH/USD rate, update as needed
+        
+        // State
+        let currentAccount = null;
+        let provider = null;
         let campaigns = [];
+        let advertiserInfo = null;
 
-        // Load campaigns from localStorage
-        function loadCampaigns() {
-            const saved = localStorage.getItem('canvasCampaigns');
-            if (saved) {
-                campaigns = JSON.parse(saved);
-                renderCampaigns();
-                updateStats();
+        // Initialize
+        async function init() {
+            if (typeof window.ethereum !== 'undefined') {
+                console.log('MetaMask detected');
+                // Check if already connected
+                const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+                if (accounts.length > 0) {
+                    await connectWallet();
+                }
+            } else {
+                showMessage('Please install MetaMask to use this dapp', 'error');
             }
         }
 
-        // Save campaigns to localStorage
-        function saveCampaigns() {
-            localStorage.setItem('canvasCampaigns', JSON.stringify(campaigns));
-        }
+        // Connect Wallet
+        async function connectWallet() {
+            if (typeof window.ethereum === 'undefined') {
+                alert('Please install MetaMask!');
+                return;
+            }
 
-        function openWalletModal() {
-            document.getElementById('walletModal').classList.add('active');
-        }
+            try {
+                provider = new ethers.providers.Web3Provider(window.ethereum);
+                const accounts = await provider.send("eth_requestAccounts", []);
+                currentAccount = accounts[0];
 
-        function closeWalletModal() {
-            document.getElementById('walletModal').classList.remove('active');
-        }
-
-        function copyAddress() {
-            const address = document.getElementById('walletAddress').textContent;
-            const btn = document.getElementById('copyBtn');
-            
-            navigator.clipboard.writeText(address).then(() => {
-                btn.textContent = 'Copied!';
-                btn.classList.add('copied');
+                // Update UI
+                const walletBtn = document.getElementById('walletBtn');
+                walletBtn.textContent = `${currentAccount.slice(0, 6)}...${currentAccount.slice(-4)}`;
+                walletBtn.classList.add('connected');
+                walletBtn.onclick = null;
                 
-                setTimeout(() => {
-                    btn.textContent = 'Copy';
-                    btn.classList.remove('copied');
-                }, 2000);
-            });
+                document.getElementById('userAvatar').style.display = 'flex';
+                document.getElementById('createCampaignBtn').disabled = false;
+
+                // Register or fetch advertiser
+                await registerAdvertiser();
+                
+                // Load campaigns
+                await loadCampaigns();
+
+                console.log('Wallet connected:', currentAccount);
+            } catch (error) {
+                console.error('Error connecting wallet:', error);
+                showMessage('Error connecting wallet: ' + error.message, 'error');
+            }
         }
 
-        function openModal() {
-            document.getElementById('createModal').classList.add('active');
+        // Register Advertiser (or fetch if already exists)
+        async function registerAdvertiser() {
+            try {
+                // Try to get existing advertiser
+                const response = await fetch(`${API_BASE_URL}/advertiser/${currentAccount}`);
+                
+                if (response.ok) {
+                    advertiserInfo = await response.json();
+                    console.log('Existing advertiser found:', advertiserInfo);
+                } else if (response.status === 404) {
+                    // Create new advertiser
+                    const createResponse = await fetch(`${API_BASE_URL}/advertiser`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            name: 'Advertiser ' + currentAccount.slice(0, 6),
+                            ethereumAddress: currentAccount,
+                            description: 'Canvas Protocol Advertiser',
+                            campaignFundsWei: '0' // Start with 0, will add funds when creating campaigns
+                        })
+                    });
+
+                    if (createResponse.ok) {
+                        advertiserInfo = await createResponse.json();
+                        console.log('New advertiser created:', advertiserInfo);
+                    } else {
+                        throw new Error('Failed to create advertiser');
+                    }
+                }
+            } catch (error) {
+                console.error('Error registering advertiser:', error);
+                showMessage('Error registering advertiser: ' + error.message, 'error');
+            }
         }
 
-        function closeModal() {
-            document.getElementById('createModal').classList.remove('active');
-            document.getElementById('campaignForm').reset();
-            // Reset price per CAPTCHA to default
-            document.getElementById('pricePerCaptcha').value = '0.05';
+        // USD to Wei conversion (approximate)
+        function usdToWei(usdAmount) {
+            const ethAmount = usdAmount / ETH_USD_RATE;
+            return ethers.utils.parseEther(ethAmount.toString()).toString();
         }
 
-        function createCampaign() {
+        // Wei to USD conversion
+        function weiToUsd(weiAmount) {
+            const ethAmount = parseFloat(ethers.utils.formatEther(weiAmount));
+            return (ethAmount * ETH_USD_RATE).toFixed(2);
+        }
+
+        // Load Campaigns
+        async function loadCampaigns() {
+            if (!currentAccount) return;
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/advertiser/${currentAccount}/campaigns`);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    campaigns = data.campaigns || [];
+                    renderCampaigns();
+                    updateStats();
+                } else {
+                    console.error('Error loading campaigns:', response.status);
+                    campaigns = [];
+                    renderCampaigns();
+                }
+            } catch (error) {
+                console.error('Error loading campaigns:', error);
+                showMessage('Error loading campaigns: ' + error.message, 'error');
+            }
+        }
+
+        // Create Campaign
+        async function createCampaign() {
             const form = document.getElementById('campaignForm');
             
             if (!form.checkValidity()) {
@@ -679,33 +717,78 @@
                 return;
             }
 
-            const campaign = {
-                id: Date.now(),
-                name: document.getElementById('campaignName').value,
-                brand: document.getElementById('brandName').value,
-                tagline: document.getElementById('tagline').value,
-                captchaType: document.getElementById('captchaType').value,
-                budget: parseFloat(document.getElementById('budget').value),
-                duration: parseInt(document.getElementById('duration').value),
-                pricePerCaptcha: parseFloat(document.getElementById('pricePerCaptcha').value),
-                description: document.getElementById('description').value,
-                spent: 0,
-                impressions: 0,
-                completions: 0,
-                status: 'active',
-                createdAt: new Date().toISOString()
-            };
+            if (!currentAccount) {
+                showMessage('Please connect your wallet first', 'error');
+                return;
+            }
 
-            campaigns.push(campaign);
-            saveCampaigns();
-            renderCampaigns();
-            updateStats();
-            closeModal();
+            const launchBtn = document.getElementById('launchBtn');
+            launchBtn.disabled = true;
+            launchBtn.textContent = 'Creating...';
+
+            try {
+                const budgetUsd = parseFloat(document.getElementById('budget').value);
+                const pricePerCaptchaUsd = parseFloat(document.getElementById('pricePerCaptcha').value);
+
+                // Convert USD to Wei
+                const budgetWei = usdToWei(budgetUsd);
+                const pricePerCaptchaWei = usdToWei(pricePerCaptchaUsd);
+
+                const campaignData = {
+                    name: document.getElementById('campaignName').value,
+                    description: document.getElementById('description').value || 
+                        `${document.getElementById('brandName').value} - ${document.getElementById('tagline').value}`,
+                    costPerCaptchaWei: pricePerCaptchaWei,
+                    totalBudgetWei: budgetWei
+                };
+
+                console.log('Creating campaign:', campaignData);
+
+                const response = await fetch(`${API_BASE_URL}/advertiser/${currentAccount}/campaigns`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(campaignData)
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    showMessage('Campaign created successfully! 🎉', 'success');
+                    
+                    // Reload campaigns
+                    await loadCampaigns();
+                    
+                    // Close modal after short delay
+                    setTimeout(() => {
+                        closeModal();
+                    }, 2000);
+                } else {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Failed to create campaign');
+                }
+            } catch (error) {
+                console.error('Error creating campaign:', error);
+                showMessage('Error creating campaign: ' + error.message, 'error');
+            } finally {
+                launchBtn.disabled = false;
+                launchBtn.textContent = 'Launch Campaign';
+            }
         }
 
+        // Render Campaigns
         function renderCampaigns() {
             const container = document.getElementById('campaignsList');
             
+            if (!currentAccount) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🔌</div>
+                        <h3>Connect Your Wallet</h3>
+                        <p>Connect your wallet to view and manage campaigns</p>
+                    </div>
+                `;
+                return;
+            }
+
             if (campaigns.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state">
@@ -717,37 +800,46 @@
                 return;
             }
 
+            const captchaNames = {
+                'crypto-vault': 'Crypto Vault',
+                'memory-match': 'Memory Match',
+                'puzzle-slide': 'Slide Puzzle',
+                'color-sort': 'Color Sort',
+                'word-scramble': 'Word Scramble'
+            };
+
             container.innerHTML = campaigns.map(campaign => {
-                const captchaNames = {
-                    'crypto-vault': 'Crypto Vault',
-                    'memory-match': 'Memory Match',
-                    'puzzle-slide': 'Slide Puzzle',
-                    'color-sort': 'Color Sort',
-                    'word-scramble': 'Word Scramble'
-                };
+                const budgetUsd = parseFloat(weiToUsd(campaign.total_budget_wei));
+                const spentUsd = parseFloat(weiToUsd(campaign.spent_budget_wei));
+                const remainingWei = campaign.total_budget_wei - campaign.spent_budget_wei;
+                const remainingUsd = parseFloat(weiToUsd(remainingWei.toString()));
+                const costPerCaptchaUsd = parseFloat(weiToUsd(campaign.cost_per_captcha_wei));
+                const completedAds = campaign.completed_ads_count || 0;
 
                 return `
                     <div class="campaign-card">
                         <div class="campaign-header">
                             <div class="campaign-info">
                                 <h3>${campaign.name}</h3>
-                                <p>${campaign.brand} • ${captchaNames[campaign.captchaType]} • ${campaign.duration} days • $${campaign.pricePerCaptcha.toFixed(2)}/CAPTCHA</p>
+                                <p>${campaign.description || 'No description'} • $${costPerCaptchaUsd.toFixed(2)}/CAPTCHA</p>
                             </div>
-                            <span class="campaign-status status-active">Active</span>
+                            <span class="campaign-status status-${campaign.status}">${campaign.status.charAt(0).toUpperCase() + campaign.status.slice(1)}</span>
                         </div>
                         <div class="campaign-metrics">
                             <div class="metric">
-                                <div class="metric-label">Budget Spent</div>
-                                <div class="metric-value">$${campaign.spent.toFixed(2)}</div>
-                                <div style="font-size: 11px; color: #666; margin-top: 2px;">of $${campaign.budget}</div>
+                                <div class="metric-label">Budget</div>
+                                <div class="metric-value">$${budgetUsd.toFixed(2)}</div>
+                                <div style="font-size: 11px; color: #666; margin-top: 2px;">Total allocated</div>
                             </div>
                             <div class="metric">
-                                <div class="metric-label">Impressions</div>
-                                <div class="metric-value">${campaign.impressions.toLocaleString()}</div>
+                                <div class="metric-label">Spent</div>
+                                <div class="metric-value">$${spentUsd.toFixed(2)}</div>
+                                <div style="font-size: 11px; color: #666; margin-top: 2px;">Remaining: $${remainingUsd.toFixed(2)}</div>
                             </div>
                             <div class="metric">
-                                <div class="metric-label">Completions</div>
-                                <div class="metric-value">${campaign.completions.toLocaleString()}</div>
+                                <div class="metric-label">Completed Ads</div>
+                                <div class="metric-value">${completedAds}</div>
+                                <div style="font-size: 11px; color: #666; margin-top: 2px;">Verified onchain</div>
                             </div>
                         </div>
                     </div>
@@ -755,55 +847,64 @@
             }).join('');
         }
 
+        // Update Stats
         function updateStats() {
-            const totalBudget = campaigns.reduce((sum, c) => sum + c.budget, 0);
-            const budgetSpent = campaigns.reduce((sum, c) => sum + c.spent, 0);
-            const totalImpressions = campaigns.reduce((sum, c) => sum + c.impressions, 0);
-            const totalCompletions = campaigns.reduce((sum, c) => sum + c.completions, 0);
+            const totalBudget = campaigns.reduce((sum, c) => {
+                return sum + parseFloat(weiToUsd(c.total_budget_wei));
+            }, 0);
+            
+            const budgetSpent = campaigns.reduce((sum, c) => {
+                return sum + parseFloat(weiToUsd(c.spent_budget_wei));
+            }, 0);
+            
+            const activeCampaignsCount = campaigns.filter(c => c.status === 'active').length;
+            
+            const totalCompletions = campaigns.reduce((sum, c) => {
+                return sum + (c.completed_ads_count || 0);
+            }, 0);
 
-            document.getElementById('totalBudget').textContent = `$${totalBudget.toLocaleString()}`;
+            document.getElementById('totalBudget').textContent = `$${totalBudget.toFixed(2)}`;
             document.getElementById('budgetSpent').textContent = `$${budgetSpent.toFixed(2)}`;
-            document.getElementById('totalImpressions').textContent = totalImpressions.toLocaleString();
+            document.getElementById('activeCampaigns').textContent = activeCampaignsCount;
             document.getElementById('totalCompletions').textContent = totalCompletions.toLocaleString();
         }
 
-        // Close modals when clicking outside
+        // Modal Functions
+        function openModal() {
+            document.getElementById('createModal').classList.add('active');
+            document.getElementById('modalMessage').innerHTML = '';
+        }
+
+        function closeModal() {
+            document.getElementById('createModal').classList.remove('active');
+            document.getElementById('campaignForm').reset();
+            document.getElementById('pricePerCaptcha').value = '0.05';
+            document.getElementById('modalMessage').innerHTML = '';
+        }
+
+        // Show Message
+        function showMessage(message, type = 'info') {
+            const modalMessage = document.getElementById('modalMessage');
+            const className = type === 'error' ? 'error-message' : 'success-message';
+            modalMessage.innerHTML = `<div class="${className}">${message}</div>`;
+        }
+
+        // Close modal when clicking outside
         document.getElementById('createModal').addEventListener('click', function(e) {
             if (e.target === this) {
                 closeModal();
             }
         });
 
-        document.getElementById('walletModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeWalletModal();
+        // Auto-refresh campaigns every 15 seconds
+        setInterval(() => {
+            if (currentAccount) {
+                loadCampaigns();
             }
-        });
+        }, 15000);
 
-        // Load campaigns on page load
-        loadCampaigns();
-
-        // Demo: Simulate some activity
-        function simulateActivity() {
-            if (campaigns.length > 0) {
-                campaigns.forEach(campaign => {
-                    // Randomly add impressions and completions
-                    if (Math.random() > 0.7) {
-                        campaign.impressions += Math.floor(Math.random() * 5);
-                        const newCompletions = Math.floor(Math.random() * 2);
-                        campaign.completions += newCompletions;
-                        // Use the campaign's custom price per CAPTCHA
-                        campaign.spent += newCompletions * campaign.pricePerCaptcha;
-                    }
-                });
-                saveCampaigns();
-                renderCampaigns();
-                updateStats();
-            }
-        }
-
-        // Simulate activity every 10 seconds for demo purposes
-        setInterval(simulateActivity, 10000);
+        // Initialize on page load
+        window.addEventListener('load', init);
     </script>
 </body>
 </html>
