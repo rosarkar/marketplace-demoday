@@ -36,7 +36,7 @@
         }
 
         .ad-section {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             padding: 30px 20px;
             text-align: center;
             color: white;
@@ -99,7 +99,7 @@
 
         .verify-btn {
             width: 100%;
-            background: #0052FF;
+            background: #10b981;
             color: white;
             border: none;
             padding: 16px;
@@ -112,7 +112,7 @@
             align-items: center;
             justify-content: center;
             gap: 10px;
-            box-shadow: 0 4px 12px rgba(0,82,255,0.3);
+            box-shadow: 0 4px 12px rgba(16,185,129,0.3);
         }
 
         .verify-btn:active {
@@ -138,7 +138,7 @@
 
         .game-header {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
 
         .game-header h3 {
@@ -152,51 +152,36 @@
             color: #666;
         }
 
-        .game-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background: #f8f9fa;
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        .vault-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            width: 100%;
-            max-width: 300px;
-        }
-
-        .vault-item {
-            aspect-ratio: 1;
-            background: white;
-            border: 2px solid #e0e0e0;
+        .workout-badge {
+            text-align: center;
+            margin-bottom: 16px;
+            padding: 12px;
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
             border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            cursor: pointer;
-            transition: all 0.2s;
-            user-select: none;
+            border: 2px solid #10b981;
         }
 
-        .vault-item:active {
-            transform: scale(0.95);
+        .workout-type {
+            font-size: 16px;
+            font-weight: 700;
+            color: #10b981;
+            margin-bottom: 4px;
         }
 
-        .vault-item.collected {
-            background: #d4edda;
-            border-color: #10b981;
+        .workout-bpm {
+            font-size: 13px;
+            color: #666;
         }
 
-        .vault-item.empty {
-            opacity: 0.3;
+        .fitness-tip {
+            text-align: center;
+            margin-bottom: 16px;
+            padding: 10px;
+            background: #f0fdf4;
+            border-radius: 10px;
+            font-size: 11px;
+            color: #666;
+            font-style: italic;
         }
 
         .score-display {
@@ -213,7 +198,62 @@
         .score-value {
             font-size: 28px;
             font-weight: 700;
-            color: #0052FF;
+            color: #10b981;
+        }
+
+        .tap-area {
+            position: relative;
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+            border-radius: 16px;
+            margin-bottom: 16px;
+            overflow: hidden;
+            border: 3px solid #e5e7eb;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tap-button {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);
+            transition: all 0.1s ease;
+            user-select: none;
+        }
+
+        .tap-button:active {
+            transform: scale(0.9);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+        }
+
+        .beat-indicator {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #10b981;
+            opacity: 0;
+        }
+
+        .beat-indicator.pulse {
+            animation: beatPulse 0.3s ease;
+        }
+
+        @keyframes beatPulse {
+            0% { opacity: 1; transform: translateX(-50%) scale(1); }
+            100% { opacity: 0; transform: translateX(-50%) scale(2); }
         }
 
         .success-section {
@@ -265,13 +305,6 @@
             transform: scale(0.98);
         }
 
-        .timer {
-            text-align: center;
-            color: #666;
-            font-size: 13px;
-            margin-bottom: 12px;
-        }
-
         .spinner {
             border: 3px solid rgba(255,255,255,0.3);
             border-radius: 50%;
@@ -301,7 +334,7 @@
         }
 
         .dot.active {
-            background: #0052FF;
+            background: #10b981;
         }
 
         .footer {
@@ -317,18 +350,37 @@
         }
 
         .footer-link {
-            color: #0052FF;
+            color: #10b981;
             text-decoration: none;
             font-weight: 600;
+        }
+
+        .promo-banner {
+            text-align: center;
+            padding: 12px;
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            border-radius: 12px;
+            margin-top: 12px;
+        }
+
+        .promo-text {
+            font-size: 11px;
+            color: #666;
+            margin-bottom: 6px;
+        }
+
+        .promo-code {
+            font-size: 16px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 2px;
         }
 
         @media (min-width: 768px) {
             .widget-container {
                 border-radius: 16px;
-            }
-
-            .vault-grid {
-                max-width: 320px;
             }
         }
 
@@ -342,8 +394,10 @@
                 max-height: 100vh;
             }
 
-            .vault-item {
-                font-size: 36px;
+            .tap-button {
+                width: 140px;
+                height: 140px;
+                font-size: 42px;
             }
         }
     </style>
@@ -351,9 +405,9 @@
 <body>
     <div class="widget-container">
         <div class="ad-section">
-            <div class="brand-logo">🚀</div>
-            <h2>Awesome Product</h2>
-            <p>The future of innovation starts here</p>
+            <div class="brand-logo">💪</div>
+            <h2>FitLife Pro</h2>
+            <p>Transform Your Body, Transform Your Life</p>
         </div>
 
         <div class="progress-dots">
@@ -365,7 +419,7 @@
         <div class="content-section">
             <div class="initial-state" id="initialState">
                 <h3>Verify You're Human</h3>
-                <p>Complete a quick interactive challenge to continue</p>
+                <p>Complete a quick rhythm challenge to continue</p>
                 <button class="verify-btn" onclick="beginVerification()">
                     <span>Begin Verification</span>
                 </button>
@@ -373,25 +427,33 @@
 
             <div class="game-section" id="gameState">
                 <div class="game-header">
-                    <h3>Collect All Bitcoin</h3>
-                    <p>Tap all the Bitcoin symbols</p>
+                    <h3>Match the Workout Rhythm</h3>
+                    <p>Tap in sync with the beat</p>
                 </div>
+
+                <div class="workout-badge" id="workoutBadge"></div>
+
+                <div class="fitness-tip" id="fitnessTip"></div>
 
                 <div class="score-display">
-                    <div class="score-label">Collected</div>
-                    <div class="score-value"><span id="score">0</span>/5</div>
+                    <div class="score-label">Perfect Beats</div>
+                    <div class="score-value"><span id="score">0</span> / <span id="target">8</span></div>
                 </div>
 
-                <div class="game-container">
-                    <div class="vault-grid" id="vaultGrid"></div>
+                <div class="tap-area" id="tapArea">
+                    <div class="beat-indicator" id="beatIndicator"></div>
+                    <div class="tap-button">💪</div>
                 </div>
 
-                <div class="timer" id="timer">Time: <span id="timeElapsed">0</span>s</div>
+                <div class="promo-banner">
+                    <div class="promo-text">Join FitLife Pro and get:</div>
+                    <div class="promo-code">30 DAYS FREE</div>
+                </div>
             </div>
 
             <div class="success-section" id="successState">
-                <div class="success-icon">✅</div>
-                <h3>Verification Complete!</h3>
+                <div class="success-icon">🏆</div>
+                <h3>Workout Complete!</h3>
                 <p>You've successfully completed the challenge. Click below to continue to the site.</p>
                 <button class="proceed-btn" onclick="proceedToSite()">
                     <span>Proceed to Site</span>
@@ -414,68 +476,160 @@
             "function name() public view returns (string)"
         ];
 
+        // Workout types with different BPMs
+        const workouts = [
+            { name: '🔥 HIIT Workout', bpm: 140, icon: '🔥', tip: 'High-intensity intervals burn more calories in less time' },
+            { name: '🏃 Cardio Blast', bpm: 120, icon: '🏃', tip: 'Regular cardio strengthens your heart and lungs' },
+            { name: '⚡ Power Training', bpm: 100, icon: '⚡', tip: 'Strength training boosts metabolism even at rest' },
+            { name: '🎯 Endurance Mode', bpm: 110, icon: '🎯', tip: 'Build stamina with consistent moderate-intensity exercise' }
+        ];
+
+        const selectedWorkout = workouts[Math.floor(Math.random() * workouts.length)];
+        const bpm = selectedWorkout.bpm;
+        const beatInterval = 60000 / bpm;
+        const targetBeats = Math.floor(Math.random() * 3) + 6; // 6-8 beats
+
         let gameState = {
-            collected: 0,
-            target: 5,
-            startTime: null,
-            bitcoinPositions: []
+            score: 0,
+            lastBeatTime: 0,
+            beatTimings: [],
+            beatIntervalId: null,
+            audioContext: null
         };
 
+        function initAudioContext() {
+            if (!gameState.audioContext) {
+                gameState.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                if (gameState.audioContext.state === 'suspended') {
+                    gameState.audioContext.resume();
+                }
+            }
+            return gameState.audioContext;
+        }
+
+        function playBeat() {
+            try {
+                const ctx = initAudioContext();
+                const oscillator = ctx.createOscillator();
+                const gainNode = ctx.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(ctx.destination);
+                
+                oscillator.frequency.value = 800;
+                oscillator.type = 'sine';
+                
+                gainNode.gain.setValueAtTime(0.3, ctx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+                
+                oscillator.start(ctx.currentTime);
+                oscillator.stop(ctx.currentTime + 0.1);
+            } catch (e) {
+                console.log('Audio playback not available');
+            }
+
+            document.getElementById('beatIndicator').classList.add('pulse');
+            setTimeout(() => {
+                document.getElementById('beatIndicator').classList.remove('pulse');
+            }, 300);
+
+            gameState.lastBeatTime = Date.now();
+        }
+
         function initializeGame() {
-            const grid = document.getElementById('vaultGrid');
-            grid.innerHTML = '';
-            
-            const items = ['₿', '₿', '₿', '₿', '₿', '❌', '❌', '❌', '❌'];
-            
-            for (let i = items.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [items[i], items[j]] = [items[j], items[i]];
-            }
-            
-            items.forEach((item, index) => {
-                const div = document.createElement('div');
-                div.className = 'vault-item';
-                div.textContent = item;
-                div.dataset.isBitcoin = item === '₿';
-                div.dataset.index = index;
-                div.onclick = () => handleItemClick(div);
-                grid.appendChild(div);
+            document.getElementById('workoutBadge').innerHTML = `
+                <div class="workout-type">${selectedWorkout.name}</div>
+                <div class="workout-bpm">${bpm} BPM</div>
+            `;
+
+            document.getElementById('fitnessTip').textContent = `💡 ${selectedWorkout.tip}`;
+            document.getElementById('target').textContent = targetBeats;
+
+            // Start beat rhythm
+            gameState.beatIntervalId = setInterval(playBeat, beatInterval);
+            setTimeout(playBeat, 500);
+
+            // Setup tap handlers
+            document.getElementById('tapArea').addEventListener('click', handleTap);
+            document.getElementById('tapArea').addEventListener('touchend', (e) => {
+                e.preventDefault();
+                handleTap();
             });
-            
-            gameState.startTime = Date.now();
-            updateTimer();
         }
 
-        function handleItemClick(element) {
-            if (element.classList.contains('collected') || element.classList.contains('empty')) {
-                return;
-            }
-            
-            const isBitcoin = element.dataset.isBitcoin === 'true';
-            
-            if (isBitcoin) {
-                element.classList.add('collected');
-                gameState.collected++;
-                document.getElementById('score').textContent = gameState.collected;
+        function handleTap() {
+            const tapTime = Date.now();
+            const timeSinceLastBeat = tapTime - gameState.lastBeatTime;
+            const tolerance = beatInterval * 0.35; // 35% tolerance
+
+            if (Math.abs(timeSinceLastBeat) < tolerance || 
+                Math.abs(timeSinceLastBeat - beatInterval) < tolerance) {
                 
-                if (gameState.collected === gameState.target) {
-                    completeGame();
+                if (navigator.vibrate) {
+                    navigator.vibrate(20);
                 }
+
+                gameState.score++;
+                document.getElementById('score').textContent = gameState.score;
+                gameState.beatTimings.push(timeSinceLastBeat);
+
+                if (gameState.score >= targetBeats) {
+                    checkCompletion();
+                }
+            }
+        }
+
+        function checkCompletion() {
+            if (gameState.beatTimings.length < 3) return;
+
+            // Check for human-like variation in timing
+            const avgTiming = gameState.beatTimings.reduce((a, b) => a + b, 0) / gameState.beatTimings.length;
+            const variance = gameState.beatTimings.reduce((sum, time) => {
+                return sum + Math.pow(time - avgTiming, 2);
+            }, 0) / gameState.beatTimings.length;
+
+            // Humans have natural variation (not perfect, but not random)
+            const hasHumanRhythm = variance > 100 && variance < 50000;
+
+            if (hasHumanRhythm) {
+                clearInterval(gameState.beatIntervalId);
+
+                // Play success sound
+                try {
+                    const ctx = initAudioContext();
+                    [600, 800, 1000].forEach((freq, i) => {
+                        setTimeout(() => {
+                            const oscillator = ctx.createOscillator();
+                            const gainNode = ctx.createGain();
+                            oscillator.connect(gainNode);
+                            gainNode.connect(ctx.destination);
+                            oscillator.frequency.value = freq;
+                            oscillator.type = 'sine';
+                            gainNode.gain.setValueAtTime(0.3, ctx.currentTime);
+                            gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
+                            oscillator.start(ctx.currentTime);
+                            oscillator.stop(ctx.currentTime + 0.2);
+                        }, i * 100);
+                    });
+                } catch (e) {}
+
+                if (navigator.vibrate) {
+                    navigator.vibrate([50, 100, 50]);
+                }
+
+                setTimeout(() => {
+                    document.getElementById('gameState').classList.remove('active');
+                    document.getElementById('successState').classList.add('active');
+                    document.getElementById('dot3').classList.add('active');
+                    
+                    recordCompletion();
+                }, 500);
             } else {
-                element.classList.add('empty');
+                // Reset for bot-like behavior
+                gameState.score = 0;
+                gameState.beatTimings = [];
+                document.getElementById('score').textContent = gameState.score;
             }
-        }
-
-        function updateTimer() {
-            const timerInterval = setInterval(() => {
-                if (gameState.collected >= gameState.target) {
-                    clearInterval(timerInterval);
-                    return;
-                }
-                
-                const elapsed = Math.floor((Date.now() - gameState.startTime) / 1000);
-                document.getElementById('timeElapsed').textContent = elapsed;
-            }, 100);
         }
 
         async function beginVerification() {
@@ -491,7 +645,7 @@
                 
                 const name = await contract.name();
                 console.log('[Canvas] ✓ Ad impression recorded onchain:', name);
-                console.log('[Canvas] → Advertiser charged for impression');
+                console.log('[Canvas] → Advertiser (FitLife Pro) charged for impression');
                 console.log('[Canvas] → Starting CAPTCHA game...');
                 
                 setTimeout(() => {
@@ -507,16 +661,6 @@
                 btn.innerHTML = '<span>Begin Verification</span>';
                 alert('Connection error. Please try again.');
             }
-        }
-
-        function completeGame() {
-            setTimeout(() => {
-                document.getElementById('gameState').classList.remove('active');
-                document.getElementById('successState').classList.add('active');
-                document.getElementById('dot3').classList.add('active');
-                
-                recordCompletion();
-            }, 500);
         }
 
         async function recordCompletion() {
