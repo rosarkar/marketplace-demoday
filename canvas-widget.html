@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Canvas CAPTCHA Verification</title>
-    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -469,12 +468,12 @@
     </div>
 
     <script>
-        const BASE_RPC = 'https://mainnet.base.org';
-        const CONTRACT_ADDRESS = '0x940181a94A35A4569E4529A3CDfB74e38FD98631';
-        const CONTRACT_ABI = [
-            "function totalSupply() public view returns (uint256)",
-            "function name() public view returns (string)"
-        ];
+        // Canvas Protocol API Configuration
+        const API_BASE_URL = 'https://api.canvas-protocol.com'; // Update with your API URL
+        const CAMPAIGN_ID = 'your-campaign-uuid'; // Update with your campaign ID
+        const PUBLISHER_ADDRESS = '0xYourPublisherAddress'; // Update with your publisher address
+        
+        let captchaId = null;
 
         // Workout types with different BPMs
         const workouts = [
@@ -494,7 +493,8 @@
             lastBeatTime: 0,
             beatTimings: [],
             beatIntervalId: null,
-            audioContext: null
+            audioContext: null,
+            sessionId: null
         };
 
         function initAudioContext() {
@@ -638,14 +638,35 @@
             btn.innerHTML = '<div class="spinner"></div><span>Connecting...</span>';
             
             try {
-                // CHECKPOINT 1: Record Ad Impression
+                // CHECKPOINT 1: Record Ad Impression via API
                 console.log('[Canvas] CHECKPOINT 1: Recording ad impression...');
-                const provider = new ethers.providers.JsonRpcProvider(BASE_RPC);
-                const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, provider);
                 
-                const name = await contract.name();
-                console.log('[Canvas] ✓ Ad impression recorded onchain:', name);
+                const sessionId = generateSessionId();
+                gameState.sessionId = sessionId;
+                
+                const response = await fetch(`${API_BASE_URL}/captcha/start`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        campaignId: CAMPAIGN_ID,
+                        publisherAddress: PUBLISHER_ADDRESS,
+                        sessionId: sessionId,
+                        userIpHash: null // Optional: add IP hashing on your backend
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API error: ${response.status}`);
+                }
+
+                const data = await response.json();
+                captchaId = data.captcha.id;
+                
+                console.log('[Canvas] ✓ Ad impression recorded:', captchaId);
                 console.log('[Canvas] → Advertiser (FitLife Pro) charged for impression');
+                console.log('[Canvas] → Payment amount:', data.captcha.payment_amount_wei, 'wei');
                 console.log('[Canvas] → Starting CAPTCHA game...');
                 
                 setTimeout(() => {
@@ -663,16 +684,41 @@
             }
         }
 
+        function generateSessionId() {
+            return 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        }
+
         async function recordCompletion() {
+            if (!captchaId) {
+                console.error('[Canvas] No captcha ID available');
+                return;
+            }
+
             try {
-                // CHECKPOINT 2: Record CAPTCHA Completion & Trigger Payment
+                // CHECKPOINT 2: Record CAPTCHA Completion & Trigger Payment via API
                 console.log('[Canvas] CHECKPOINT 2: Recording completion...');
-                const provider = new ethers.providers.JsonRpcProvider(BASE_RPC);
-                const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, provider);
                 
-                const totalSupply = await contract.totalSupply();
-                console.log('[Canvas] ✓ Completion recorded onchain:', totalSupply.toString());
-                console.log('[Canvas] → Payment triggered: Publisher receives 60% share');
+                const response = await fetch(`${API_BASE_URL}/captcha/${captchaId}/complete`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        sessionId: gameState.sessionId || null
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API error: ${response.status}`);
+                }
+
+                const data = await response.json();
+                
+                console.log('[Canvas] ✓ Completion recorded:', data.captcha.id);
+                console.log('[Canvas] → Status:', data.captcha.status);
+                console.log('[Canvas] → Payment processed:', data.paymentProcessed);
+                console.log('[Canvas] → Payment amount:', data.paymentAmountWei, 'wei');
+                console.log('[Canvas] → Publisher receives 60% share');
                 console.log('[Canvas] → Operators receive 20% for validation');
                 console.log('[Canvas] → Protocol keeps 20% for operations');
                 
