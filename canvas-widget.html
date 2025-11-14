@@ -469,11 +469,93 @@
 
     <script>
         // Canvas Protocol API Configuration
-        const API_BASE_URL = 'https://api.canvas-protocol.com'; // Update with your API URL
-        const CAMPAIGN_ID = 'your-campaign-uuid'; // Update with your campaign ID
-        const PUBLISHER_ADDRESS = '0xYourPublisherAddress'; // Update with your publisher address
+        const API_BASE_URL = 'http://34.75.24.60:8080'; // Your Canvas Protocol API
+        
+        // Dynamic configuration - will be loaded from API
+        let config = {
+            publisherAddress: null,
+            campaignId: null,
+            costPerCaptchaWei: null
+        };
         
         let captchaId = null;
+
+        // Get publisher address from URL parameter
+        function getPublisherAddressFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('publisherAddress');
+        }
+
+        // Fetch publisher's assigned campaign
+        async function fetchCampaignAssignment(publisherAddress) {
+            try {
+                console.log('[Canvas] Fetching campaign assignment for:', publisherAddress);
+                
+                const response = await fetch(`${API_BASE_URL}/publisher/${publisherAddress}/campaign`);
+                
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch campaign: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (!data.assignment.campaign_id) {
+                    throw new Error('No campaign assigned to this publisher');
+                }
+                
+                console.log('[Canvas] ✓ Campaign assignment loaded:', data.assignment);
+                
+                return {
+                    campaignId: data.assignment.campaign_id,
+                    campaignName: data.assignment.campaign_name,
+                    costPerCaptchaWei: data.assignment.cost_per_captcha_wei
+                };
+                
+            } catch (error) {
+                console.error('[Canvas] Error fetching campaign assignment:', error);
+                throw error;
+            }
+        }
+
+        // Initialize configuration on page load
+        async function initializeConfig() {
+            try {
+                // Get publisher address from URL
+                config.publisherAddress = getPublisherAddressFromURL();
+                
+                if (!config.publisherAddress) {
+                    throw new Error('Publisher address not provided');
+                }
+                
+                console.log('[Canvas] Initializing with publisher:', config.publisherAddress);
+                
+                // Fetch assigned campaign
+                const assignment = await fetchCampaignAssignment(config.publisherAddress);
+                config.campaignId = assignment.campaignId;
+                config.costPerCaptchaWei = assignment.costPerCaptchaWei;
+                
+                console.log('[Canvas] ✓ Configuration loaded successfully');
+                console.log('[Canvas] → Campaign:', assignment.campaignName);
+                console.log('[Canvas] → Cost per CAPTCHA:', config.costPerCaptchaWei, 'wei');
+                
+                return true;
+                
+            } catch (error) {
+                console.error('[Canvas] Configuration initialization failed:', error);
+                alert('Failed to load CAPTCHA configuration. Please contact the site administrator.');
+                return false;
+            }
+        }
+
+        // Initialize on page load
+        window.addEventListener('DOMContentLoaded', async () => {
+            const initialized = await initializeConfig();
+            if (!initialized) {
+                // Disable the verify button if config failed
+                document.querySelector('.verify-btn').disabled = true;
+                document.querySelector('.verify-btn').textContent = 'Configuration Error';
+            }
+        });
 
         // Workout types with different BPMs
         const workouts = [
@@ -638,6 +720,11 @@
             btn.innerHTML = '<div class="spinner"></div><span>Connecting...</span>';
             
             try {
+                // Verify config is loaded
+                if (!config.campaignId || !config.publisherAddress) {
+                    throw new Error('Configuration not loaded');
+                }
+                
                 // CHECKPOINT 1: Record Ad Impression via API
                 console.log('[Canvas] CHECKPOINT 1: Recording ad impression...');
                 
@@ -650,15 +737,16 @@
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        campaignId: CAMPAIGN_ID,
-                        publisherAddress: PUBLISHER_ADDRESS,
+                        campaignId: config.campaignId,
+                        publisherAddress: config.publisherAddress,
                         sessionId: sessionId,
                         userIpHash: null // Optional: add IP hashing on your backend
                     })
                 });
 
                 if (!response.ok) {
-                    throw new Error(`API error: ${response.status}`);
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || `API error: ${response.status}`);
                 }
 
                 const data = await response.json();
@@ -680,7 +768,7 @@
                 console.error('[Canvas] Error at checkpoint 1:', error);
                 btn.disabled = false;
                 btn.innerHTML = '<span>Begin Verification</span>';
-                alert('Connection error. Please try again.');
+                alert('Connection error: ' + error.message);
             }
         }
 
