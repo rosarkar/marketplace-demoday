@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rohit's Tech Blog | Latest in Blockchain & AI</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Canvas Widget Overlay Styles */
+        .canvas-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .canvas-overlay.active {
+            display: flex;
+        }
+
+        .canvas-overlay-content {
+            position: relative;
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .canvas-iframe-wrapper {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 450px;
+            height: 750px;
+            max-width: 100vw;
+            max-height: 95vh;
+        }
+
+        .canvas-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+
+        /* Blur content when overlay is active */
+        body.verification-required .page-content {
+            filter: blur(8px);
+            pointer-events: none;
+            user-select: none;
+        }
+
+        @media (max-width: 768px) {
+            .canvas-iframe-wrapper {
+                border-radius: 0;
+                width: 100vw;
+                height: 100vh;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Canvas Widget Overlay -->
+    <div class="canvas-overlay" id="canvasOverlay">
+        <div class="canvas-overlay-content">
+            <div class="canvas-iframe-wrapper">
+                <iframe 
+                    src="canvas-widget.html" 
+                    class="canvas-iframe"
+                    id="canvasWidget"
+                    allow="clipboard-write"
+                ></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Page Content -->
+    <div class="page-content">
+        <!-- Navigation -->
+        <header class="header">
+            <div class="nav-container">
+                <div class="logo">Rohit's Blog</div>
+                <nav class="nav-links">
+                    <a href="index.html" class="active">Home</a>
+                    <a href="article-bitcoin.html">Bitcoin ATH</a>
+                    <a href="article-ai.html">AI Trends</a>
+                    <a href="article-defi.html">DeFi 2025</a>
+                    <a href="about.html">About</a>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Insights on Blockchain, AI, and the Future of Tech</h1>
+                <p>Welcome! Exploring the intersection of technology, finance, and innovation.</p>
+            </div>
+        </section>
+
+        <!-- Article Grid -->
+        <main class="container">
+            <div class="articles-grid">
+                <!-- Featured Article -->
+                <article class="article-card featured">
+                    <div class="article-image bitcoin-bg">₿</div>
+                    <div class="article-content">
+                        <span class="category">BLOCKCHAIN</span>
+                        <h2><a href="article-bitcoin.html">Bitcoin Hits New All-Time High as Institutional Adoption Accelerates</a></h2>
+                        <p>In a historic moment for cryptocurrency markets, Bitcoin surged past $100,000 today, marking a new all-time high...</p>
+                        <div class="article-meta">
+                            <span>Rohit Sarkar</span>
+                            <span>•</span>
+                            <span>Nov 10, 2025</span>
+                            <span>•</span>
+                            <span>5 min read</span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Regular Articles -->
+                <article class="article-card">
+                    <div class="article-image ai-bg">🤖</div>
+                    <div class="article-content">
+                        <span class="category">ARTIFICIAL INTELLIGENCE</span>
+                        <h2><a href="article-ai.html">AI Agents Are Reshaping the Enterprise Software Landscape</a></h2>
+                        <p>Large language models have evolved from chatbots to autonomous agents capable of complex workflows...</p>
+                        <div class="article-meta">
+                            <span>Rohit Sarkar</span>
+                            <span>•</span>
+                            <span>Nov 8, 2025</span>
+                            <span>•</span>
+                            <span>4 min read</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="article-card">
+                    <div class="article-image defi-bg">💰</div>
+                    <div class="article-content">
+                        <span class="category">DEFI</span>
+                        <h2><a href="article-defi.html">The State of DeFi in 2025: What's Working and What's Not</a></h2>
+                        <p>Decentralized finance has matured significantly, but challenges around UX and regulation remain...</p>
+                        <div class="article-meta">
+                            <span>Rohit Sarkar</span>
+                            <span>•</span>
+                            <span>Nov 5, 2025</span>
+                            <span>•</span>
+                            <span>6 min read</span>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container">
+                <p>&copy; 2025 Rohit's Blog. All rights reserved.</p>
+                <p>Powered by Canvas Protocol for human verification</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Canvas Protocol Integration
+        const VERIFICATION_TOKEN = 'canvas_verified';
+        const TOKEN_EXPIRY = 'canvas_verified_expiry';
+        const TOKEN_DURATION = 24 * 60 * 60 * 1000; // 24 hours
+
+        function checkVerification() {
+            const token = localStorage.getItem(VERIFICATION_TOKEN);
+            const expiry = localStorage.getItem(TOKEN_EXPIRY);
+            
+            // Check if token exists and hasn't expired
+            if (token && expiry) {
+                const now = Date.now();
+                if (now < parseInt(expiry)) {
+                    console.log('[Canvas] User verified, token valid');
+                    return true;
+                } else {
+                    // Token expired, clear it
+                    localStorage.removeItem(VERIFICATION_TOKEN);
+                    localStorage.removeItem(TOKEN_EXPIRY);
+                    console.log('[Canvas] Token expired, verification required');
+                }
+            }
+            
+            return false;
+        }
+
+        function showVerificationOverlay() {
+            console.log('[Canvas] Showing verification overlay');
+            document.body.classList.add('verification-required');
+            document.getElementById('canvasOverlay').classList.add('active');
+        }
+
+        function hideVerificationOverlay() {
+            console.log('[Canvas] Hiding verification overlay');
+            document.body.classList.remove('verification-required');
+            document.getElementById('canvasOverlay').classList.remove('active');
+        }
+
+        function storeVerificationToken() {
+            const now = Date.now();
+            const expiry = now + TOKEN_DURATION;
+            
+            localStorage.setItem(VERIFICATION_TOKEN, 'true');
+            localStorage.setItem(TOKEN_EXPIRY, expiry.toString());
+            
+            console.log('[Canvas] Verification token stored, valid for 24 hours');
+        }
+
+        // Listen for messages from the Canvas widget iframe
+        window.addEventListener('message', function(event) {
+            // In production, verify event.origin for security
+            if (event.data.type === 'CAPTCHA_COMPLETE') {
+                console.log('[Canvas] CAPTCHA completed successfully');
+                
+                // Store verification token
+                storeVerificationToken();
+                
+                // Hide overlay
+                hideVerificationOverlay();
+                
+                // Optional: Show success message
+                console.log('[Canvas] User can now browse the site freely');
+            }
+        });
+
+        // Check verification on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            console.log('[Canvas] Checking verification status...');
+            
+            if (!checkVerification()) {
+                // Show verification overlay if not verified
+                showVerificationOverlay();
+            } else {
+                console.log('[Canvas] User already verified, allowing access');
+            }
+        });
+
+        // Prevent closing overlay (optional - remove if you want users to be able to close)
+        document.getElementById('canvasOverlay').addEventListener('click', function(e) {
+            // Don't close if clicking inside the iframe wrapper
+            if (e.target === this) {
+                console.log('[Canvas] Please complete verification to continue');
+            }
+        });
+    </script>
+</body>
+</html>
