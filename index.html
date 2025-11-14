@@ -56,6 +56,8 @@
             user-select: none;
         }
 
+
+
         @media (max-width: 768px) {
             .canvas-iframe-wrapper {
                 border-radius: 0;
@@ -66,12 +68,12 @@
     </style>
 </head>
 <body>
-    <!-- Canvas Widget Overlay -->
+<!-- Canvas Widget Overlay -->
     <div class="canvas-overlay" id="canvasOverlay">
         <div class="canvas-overlay-content">
             <div class="canvas-iframe-wrapper">
                 <iframe 
-                    src="canvas-widget.html" 
+                    src="" 
                     class="canvas-iframe"
                     id="canvasWidget"
                     allow="clipboard-write"
@@ -169,23 +171,86 @@
     </div>
 
     <script>
-        // Canvas Protocol Integration
+        // Canvas Protocol Configuration
+        const API_BASE_URL = 'http://34.75.24.60:8080'; // Your Canvas Protocol API
+        
+        // NO MORE MANUAL CONFIGURATION!
+        // Publisher address is automatically detected from domain
+        let PUBLISHER_ADDRESS = null;
+        
+        // Verification token management
         const VERIFICATION_TOKEN = 'canvas_verified';
         const TOKEN_EXPIRY = 'canvas_verified_expiry';
         const TOKEN_DURATION = 24 * 60 * 60 * 1000; // 24 hours
+
+        // Extract domain from current URL
+        function getCurrentDomain() {
+            const hostname = window.location.hostname;
+            // Remove 'www.' if present
+            return hostname.replace(/^www\./, '');
+        }
+
+        // Fetch publisher by domain
+        async function fetchPublisherByDomain() {
+            try {
+                const domain = getCurrentDomain();
+                console.log('[Canvas] Detecting publisher for domain:', domain);
+                
+                // Fetch all publishers
+                const response = await fetch(`${API_BASE_URL}/publishers`);
+                
+                if (!response.ok) {
+                    console.log('[Canvas] Unable to reach Canvas Protocol API');
+                    return null;
+                }
+                
+                const data = await response.json();
+                
+                if (!data.success || !data.publishers || data.publishers.length === 0) {
+                    console.log('[Canvas] No publishers registered in system');
+                    return null;
+                }
+                
+                // Find publisher matching this domain
+                const publisher = data.publishers.find(p => {
+                    if (!p.website_url) return false;
+                    
+                    try {
+                        const publisherUrl = new URL(p.website_url);
+                        const publisherDomain = publisherUrl.hostname.replace(/^www\./, '');
+                        return publisherDomain === domain;
+                    } catch (e) {
+                        return false;
+                    }
+                });
+                
+                if (!publisher) {
+                    console.log('[Canvas] No publisher registered for domain:', domain);
+                    return null;
+                }
+                
+                console.log('[Canvas] ✓ Publisher found:', publisher.name);
+                console.log('[Canvas] → Address:', publisher.ethereum_address);
+                console.log('[Canvas] → Total earnings:', publisher.total_earnings_wei, 'wei');
+                
+                return publisher.ethereum_address;
+                
+            } catch (error) {
+                console.log('[Canvas] Error checking publisher registration:', error.message);
+                return null;
+            }
+        }
 
         function checkVerification() {
             const token = localStorage.getItem(VERIFICATION_TOKEN);
             const expiry = localStorage.getItem(TOKEN_EXPIRY);
             
-            // Check if token exists and hasn't expired
             if (token && expiry) {
                 const now = Date.now();
                 if (now < parseInt(expiry)) {
                     console.log('[Canvas] User verified, token valid');
                     return true;
                 } else {
-                    // Token expired, clear it
                     localStorage.removeItem(VERIFICATION_TOKEN);
                     localStorage.removeItem(TOKEN_EXPIRY);
                     console.log('[Canvas] Token expired, verification required');
@@ -217,38 +282,54 @@
             console.log('[Canvas] Verification token stored, valid for 24 hours');
         }
 
-        // Listen for messages from the Canvas widget iframe
-        window.addEventListener('message', function(event) {
-            // In production, verify event.origin for security
-            if (event.data.type === 'CAPTCHA_COMPLETE') {
-                console.log('[Canvas] CAPTCHA completed successfully');
-                
-                // Store verification token
-                storeVerificationToken();
-                
-                // Hide overlay
-                hideVerificationOverlay();
-                
-                // Optional: Show success message
-                console.log('[Canvas] User can now browse the site freely');
-            }
-        });
-
-        // Check verification on page load
-        window.addEventListener('DOMContentLoaded', function() {
-            console.log('[Canvas] Checking verification status...');
+        async function initializeCanvasWidget() {
+            // Automatically detect publisher from domain
+            PUBLISHER_ADDRESS = await fetchPublisherByDomain();
             
+            if (!PUBLISHER_ADDRESS) {
+                // Publisher not registered - allow free browsing
+                console.log('[Canvas] ℹ️  This website is not registered with Canvas Protocol');
+                console.log('[Canvas] → To monetize with CAPTCHA, register at: https://canvas-protocol.com/register');
+                console.log('[Canvas] → Users can browse freely without verification');
+                return; // Exit early, don't show CAPTCHA
+            }
+            
+            // Publisher found - initialize CAPTCHA widget
+            const iframe = document.getElementById('canvasWidget');
+            iframe.src = `canvas-widget.html?publisherAddress=${PUBLISHER_ADDRESS}`;
+            
+            console.log('[Canvas] ✓ Widget initialized successfully');
+            
+            // Show overlay if not verified
             if (!checkVerification()) {
-                // Show verification overlay if not verified
                 showVerificationOverlay();
             } else {
                 console.log('[Canvas] User already verified, allowing access');
             }
+        }
+
+        // Listen for messages from the Canvas widget iframe
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'CAPTCHA_COMPLETE') {
+                console.log('[Canvas] CAPTCHA completed successfully');
+                
+                storeVerificationToken();
+                hideVerificationOverlay();
+                
+                console.log('[Canvas] User can now browse the site freely');
+            }
         });
 
-        // Prevent closing overlay (optional - remove if you want users to be able to close)
+        // Initialize on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            console.log('[Canvas] Starting Canvas Protocol...');
+            console.log('[Canvas] Domain:', getCurrentDomain());
+            
+            initializeCanvasWidget();
+        });
+
+        // Prevent closing overlay by clicking outside
         document.getElementById('canvasOverlay').addEventListener('click', function(e) {
-            // Don't close if clicking inside the iframe wrapper
             if (e.target === this) {
                 console.log('[Canvas] Please complete verification to continue');
             }
