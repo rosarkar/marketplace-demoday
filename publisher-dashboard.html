@@ -567,7 +567,7 @@
             <div style="text-align: center; margin-top: 20px;">
                 <p style="font-size: 13px; color: #666;">
                     Don't have an account? 
-                    <a href="publisher-signup-improved.html" style="color: #10b981; text-decoration: none;">Sign up here</a>
+                    <a href="publisher-signup.html" style="color: #10b981; text-decoration: none;">Sign up here</a>
                 </p>
             </div>
         </div>
@@ -656,7 +656,23 @@
                 <form id="withdrawForm">
                     <div class="form-group">
                         <label>Amount (ETH) *</label>
-                        <input type="number" id="withdrawAmount" placeholder="0.5" min="0.001" step="0.001" required>
+                        <div style="display: flex; gap: 8px; align-items: stretch;">
+                            <input type="number" id="withdrawAmount" placeholder="0.5" step="0.001" style="flex: 1;">
+                            <button type="button" onclick="setMaxWithdrawAmount()" style="
+                                padding: 8px 12px;
+                                background: #f3f4f6;
+                                border: 1px solid #d1d5db;
+                                border-radius: 6px;
+                                font-size: 0.875rem;
+                                font-weight: 500;
+                                color: #374151;
+                                cursor: pointer;
+                                transition: all 0.2s;
+                                white-space: nowrap;
+                            " onmouseover="this.style.background='#e5e7eb'" onmouseout="this.style.background='#f3f4f6'">
+                                Max
+                            </button>
+                        </div>
                         <div class="form-note">Available: <span id="availableBalance">-</span></div>
                     </div>
 
@@ -696,7 +712,17 @@
 
         function formatEth(wei) {
             const eth = weiToEth(wei);
-            return parseFloat(eth).toFixed(4) + ' ETH';
+            const ethValue = parseFloat(eth);
+            
+            // For very small amounts, show more decimal places
+            if (ethValue === 0) {
+                return '0 ETH';
+            } else if (ethValue < 0.0001) {
+                // Show up to 8 decimal places for small amounts
+                return ethValue.toFixed(8).replace(/\.?0+$/, '') + ' ETH';
+            } else {
+                return ethValue.toFixed(4) + ' ETH';
+            }
         }
 
         function shortenAddress(address) {
@@ -920,22 +946,35 @@
             document.getElementById('withdrawModal').classList.remove('active');
         }
 
+        // Set maximum withdrawable amount
+        function setMaxWithdrawAmount() {
+            const availableBalanceText = document.getElementById('availableBalance').textContent;
+            // Extract the ETH amount from the formatted text (e.g., "0.00002 ETH" -> "0.00002")
+            const ethAmount = availableBalanceText.replace(' ETH', '').trim();
+            
+            if (ethAmount && ethAmount !== '-' && ethAmount !== '0') {
+                document.getElementById('withdrawAmount').value = ethAmount;
+            }
+        }
+
         // Process withdrawal
         async function processWithdrawal() {
-            const form = document.getElementById('withdrawForm');
             const withdrawBtn = document.getElementById('processWithdrawBtn');
             const errorDiv = document.getElementById('withdrawError');
             const successDiv = document.getElementById('withdrawSuccess');
 
-            if (!form.checkValidity()) {
-                form.reportValidity();
+            const amountValue = document.getElementById('withdrawAmount').value.trim();
+            const amount = parseFloat(amountValue);
+            const withdrawAddress = document.getElementById('withdrawAddress').value.trim();
+
+            // Custom validation - only check for zero or invalid amounts
+            if (!amountValue || isNaN(amount) || amount <= 0) {
+                errorDiv.textContent = 'Please enter a valid withdrawal amount greater than 0';
+                errorDiv.style.display = 'block';
                 return;
             }
 
-            const amount = parseFloat(document.getElementById('withdrawAmount').value);
-            const withdrawAddress = document.getElementById('withdrawAddress').value.trim();
-
-            // Validate amount
+            // Validate amount doesn't exceed available balance
             const availableBalance = parseFloat(weiToEth(publisherData.total_earnings_wei));
             if (amount > availableBalance) {
                 errorDiv.textContent = 'Withdrawal amount exceeds available balance';

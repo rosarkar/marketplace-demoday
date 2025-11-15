@@ -314,12 +314,6 @@
                     <div class="form-note">This helps us match you with relevant publishers</div>
                 </div>
 
-                <div class="form-group">
-                    <label>Initial Campaign Funds (ETH) *</label>
-                    <input type="number" id="campaignFunds" placeholder="1.0" required min="0.01" step="0.01">
-                    <div class="form-note">You can add more funds later from your dashboard</div>
-                </div>
-
                 <button type="submit" class="submit-btn" id="submitBtn">Create Advertiser Account</button>
             </form>
         </div>
@@ -358,23 +352,18 @@
             const companyName = document.getElementById('companyName').value.trim();
             const ethereumAddress = document.getElementById('ethereumAddress').value.trim();
             const description = document.getElementById('description').value.trim();
-            const campaignFunds = parseFloat(document.getElementById('campaignFunds').value);
-
             // Validate Ethereum address format
             if (!/^0x[a-fA-F0-9]{40}$/.test(ethereumAddress)) {
                 showError('Invalid Ethereum address format');
                 return;
             }
 
-            // Convert ETH to Wei (1 ETH = 10^18 wei)
-            const campaignFundsWei = (campaignFunds * 1e18).toString();
-
-            // Prepare API payload matching backend expectations
+            // Prepare API payload matching backend expectations (always start with 0 campaign funds)
             const payload = {
                 name: companyName,
                 ethereumAddress: ethereumAddress,
                 description: description,
-                campaignFundsWei: campaignFundsWei
+                campaignFundsWei: "0"
             };
 
             console.log('📤 Submitting advertiser registration:', payload);
@@ -450,19 +439,6 @@
             if (value.length === 42 && /^0x[a-fA-F0-9]{40}$/.test(value)) {
                 e.target.style.borderColor = '#10b981';
             } else if (value.length > 0) {
-                e.target.style.borderColor = '#ef4444';
-            } else {
-                e.target.style.borderColor = '#e0e0e0';
-            }
-        });
-
-        // Campaign funds validation
-        document.getElementById('campaignFunds').addEventListener('input', function(e) {
-            const value = parseFloat(e.target.value);
-            
-            if (value >= 0.01) {
-                e.target.style.borderColor = '#10b981';
-            } else if (e.target.value.length > 0) {
                 e.target.style.borderColor = '#ef4444';
             } else {
                 e.target.style.borderColor = '#e0e0e0';

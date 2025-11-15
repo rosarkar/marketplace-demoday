@@ -204,24 +204,11 @@
 
         /**
          * Check if user has valid verification token
+         * For demo purposes, always return false to show CAPTCHA
          */
         function checkVerification() {
-            const token = localStorage.getItem(VERIFICATION_TOKEN);
-            const expiry = localStorage.getItem(TOKEN_EXPIRY);
-            
-            if (token && expiry) {
-                const now = Date.now();
-                if (now < parseInt(expiry)) {
-                    console.log('[Canvas] ✅ User verified, token valid');
-                    return true;
-                } else {
-                    // Token expired
-                    localStorage.removeItem(VERIFICATION_TOKEN);
-                    localStorage.removeItem(TOKEN_EXPIRY);
-                    console.log('[Canvas] ⏰ Token expired, verification required');
-                }
-            }
-            
+            // Always return false for demo to show CAPTCHA every time
+            console.log('[Canvas] 🎬 Demo mode: Always require verification');
             return false;
         }
 
@@ -300,7 +287,7 @@
                 if (!publisher) {
                     console.log('[Canvas] ❌ No publisher registered for domain:', domain);
                     console.log('[Canvas] ℹ️  To monetize this site:');
-                    console.log('[Canvas]     1. Go to publisher-signup-improved.html');
+                    console.log('[Canvas]     1. Go to publisher-signup.html');
                     console.log('[Canvas]     2. Enter website URL that matches this domain');
                     console.log('[Canvas]     3. Complete signup');
                     return null;
@@ -386,13 +373,10 @@
             console.log('[Canvas] 🚀 Starting Canvas Protocol...');
             console.log('[Canvas] 📍 Domain:', getCurrentDomain());
             
-            // Step 1: Check if user already verified
-            if (checkVerification()) {
-                console.log('[Canvas] ✅ User already verified, allowing access');
-                return;
-            }
+            // Demo mode: Skip verification check and always proceed to CAPTCHA
+            console.log('[Canvas] 🎬 Demo mode: Skipping verification check');
             
-            // Step 2: Find publisher for this domain
+            // Step 1: Find publisher for this domain
             const publisher = await fetchPublisherByDomain();
             
             if (!publisher) {
@@ -401,7 +385,7 @@
                 return;
             }
             
-            // Step 3: Check for active campaigns with budget
+            // Step 2: Check for active campaigns with budget
             const campaigns = await fetchActiveCampaigns();
             
             if (campaigns.length === 0) {
@@ -411,7 +395,7 @@
                 return;
             }
             
-            // Step 4: All checks passed - show CAPTCHA widget
+            // Step 3: All checks passed - show CAPTCHA widget
             const selectedCampaign = campaigns[0]; // Use first available campaign
             
             console.log('[Canvas] ✅ All checks passed!');
@@ -422,7 +406,7 @@
             
             // Load widget with publisher and campaign info
             const iframe = document.getElementById('canvasWidget');
-            iframe.src = `canvas-widget-improved.html?publisherAddress=${publisher.ethereum_address}&campaignId=${selectedCampaign.id}`;
+            iframe.src = `canvas-widget.html?publisherAddress=${publisher.ethereum_address}&campaignId=${selectedCampaign.id}`;
             
             // Show overlay
             showVerificationOverlay();

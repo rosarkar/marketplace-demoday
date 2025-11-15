@@ -266,6 +266,37 @@
             color: #1a1a1a;
         }
 
+        .available-funds-display {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+            text-align: center;
+            margin-bottom: 30px;
+            max-width: 300px;
+        }
+
+        .funds-label {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 8px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .funds-value {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+
+        .funds-subtitle {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
         .campaigns-section {
             background: white;
             border-radius: 12px;
@@ -527,7 +558,7 @@
             <div style="text-align: center; margin-top: 20px;">
                 <p style="font-size: 13px; color: #666;">
                     Don't have an account? 
-                    <a href="advertiser-signup-improved.html" style="color: #0052FF; text-decoration: none;">Sign up here</a>
+                    <a href="advertiser-signup.html" style="color: #0052FF; text-decoration: none;">Sign up here</a>
                 </p>
             </div>
         </div>
@@ -556,6 +587,12 @@
                     <span>+</span>
                     <span>Create Campaign</span>
                 </button>
+            </div>
+
+            <div class="available-funds-display">
+                <div class="funds-label">Available Funds</div>
+                <div class="funds-value" id="availableFunds">-</div>
+                <div class="funds-subtitle">Ready for campaigns</div>
             </div>
 
             <div class="stats-grid">
@@ -609,13 +646,13 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label>Budget (ETH) *</label>
-                            <input type="number" id="budget" placeholder="1.0" min="0.01" step="0.01" required>
+                            <input type="number" id="budget" placeholder="1.0" min="0" step="any" required>
                             <div class="form-note">Total campaign budget</div>
                         </div>
 
                         <div class="form-group">
                             <label>Cost per CAPTCHA (ETH) *</label>
-                            <input type="number" id="costPerCaptcha" placeholder="0.05" min="0.001" step="0.001" required>
+                            <input type="number" id="costPerCaptcha" placeholder="0.05" min="0" step="any" required>
                             <div class="form-note">Payment per completion</div>
                         </div>
                     </div>
@@ -641,6 +678,7 @@
 
         // Global state
         let currentWalletAddress = null;
+        let advertiserData = null;
         let campaigns = [];
 
         // Helper functions
@@ -654,7 +692,26 @@
 
         function formatEth(wei) {
             const eth = weiToEth(wei);
-            return parseFloat(eth).toFixed(4) + ' ETH';
+            const ethValue = parseFloat(eth);
+            
+            // For very small amounts, show more decimal places
+            let result;
+            if (ethValue === 0) {
+                result = '0 ETH';
+            } else if (ethValue < 0.0001) {
+                // Show up to 8 decimal places for small amounts
+                result = ethValue.toFixed(8).replace(/\.?0+$/, '') + ' ETH';
+            } else {
+                result = ethValue.toFixed(4) + ' ETH';
+            }
+            
+            console.log('💰 formatEth debug:', {
+                inputWei: wei,
+                convertedEth: eth,
+                parsedFloat: ethValue,
+                finalResult: result
+            });
+            return result;
         }
 
         function shortenAddress(address) {
@@ -695,7 +752,8 @@
                     throw new Error('Failed to load advertiser data');
                 }
 
-                // Store wallet address and show dashboard
+                // Store advertiser data and wallet address
+                advertiserData = data.advertiser;
                 currentWalletAddress = walletInput;
                 document.getElementById('loginScreen').classList.add('hidden');
                 document.getElementById('dashboard').classList.add('active');
@@ -732,6 +790,15 @@
 
                 if (data.success) {
                     campaigns = data.campaigns || [];
+                    console.log('📊 Loaded campaigns:', campaigns);
+                    // Debug each campaign's spending data
+                    campaigns.forEach(campaign => {
+                        console.log(`Campaign "${campaign.name}":`, {
+                            total_budget_wei: campaign.total_budget_wei,
+                            spent_budget_wei: campaign.spent_budget_wei,
+                            completed_ads_count: campaign.completed_ads_count
+                        });
+                    });
                     renderCampaigns();
                 }
             } catch (error) {
@@ -800,8 +867,22 @@
             const activeCampaignsCount = campaigns.filter(c => c.status === 'active').length;
             const totalCompletions = campaigns.reduce((sum, c) => sum + (c.completed_ads_count || 0), 0);
 
+            // Available funds from advertiser's campaign_funds_wei
+            const availableFunds = advertiserData ? advertiserData.campaign_funds_wei : "0";
+
+            console.log('📈 Stats calculated:', {
+                totalBudget,
+                totalSpent,
+                availableFunds,
+                activeCampaignsCount,
+                totalCompletions
+            });
+            
+            console.log('📈 About to format totalSpent:', totalSpent, 'as string:', totalSpent.toString());
+
             document.getElementById('totalBudget').textContent = formatEth(totalBudget.toString());
             document.getElementById('budgetSpent').textContent = formatEth(totalSpent.toString());
+            document.getElementById('availableFunds').textContent = formatEth(availableFunds);
             document.getElementById('activeCampaigns').textContent = activeCampaignsCount;
             document.getElementById('totalCompletions').textContent = totalCompletions.toLocaleString();
         }
@@ -811,6 +892,22 @@
             const form = document.getElementById('campaignForm');
             const createBtn = document.getElementById('createCampaignBtn');
             const errorDiv = document.getElementById('modalError');
+
+            // Custom validation for budget and cost per CAPTCHA
+            const budget = parseFloat(document.getElementById('budget').value);
+            const costPerCaptcha = parseFloat(document.getElementById('costPerCaptcha').value);
+
+            if (budget <= 0) {
+                errorDiv.textContent = 'Budget must be greater than 0';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            if (costPerCaptcha <= 0) {
+                errorDiv.textContent = 'Cost per CAPTCHA must be greater than 0';
+                errorDiv.style.display = 'block';
+                return;
+            }
 
             if (!form.checkValidity()) {
                 form.reportValidity();

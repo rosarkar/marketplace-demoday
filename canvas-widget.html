@@ -367,6 +367,7 @@
         let startTime = null;
         let gameTime = 5.0;
         let timerInterval = null;
+        let sessionId = null;
 
         // Game state
         const bitcoinItems = [
@@ -436,6 +437,9 @@
             startBtn.innerHTML = '<div class="loading-spinner"></div><span>Starting...</span>';
 
             try {
+                // Generate session ID once and store it
+                sessionId = generateSessionId();
+                
                 // Call API to start captcha
                 const response = await fetch(`${API_BASE_URL}/captcha/start`, {
                     method: 'POST',
@@ -445,7 +449,7 @@
                     body: JSON.stringify({
                         campaignId: CAMPAIGN_ID,
                         publisherAddress: PUBLISHER_ADDRESS,
-                        sessionId: generateSessionId(),
+                        sessionId: sessionId,
                         userIpHash: null // Optional: Could add IP hashing on backend
                     })
                 });
@@ -566,7 +570,7 @@
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        sessionId: generateSessionId()
+                        sessionId: sessionId
                     })
                 });
 
