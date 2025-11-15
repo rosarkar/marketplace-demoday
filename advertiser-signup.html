@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -263,6 +262,15 @@
             color: #1a1a1a;
             line-height: 1.5;
         }
+
+        .info-box code {
+            background: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            word-break: break-all;
+        }
     </style>
 </head>
 <body>
@@ -285,6 +293,7 @@
             <form id="advertiserForm">
                 <div class="info-box">
                     <p><strong>Note:</strong> You'll need an Ethereum wallet address to create campaigns and receive verification data onchain.</p>
+                    <p><strong>Deposit Funds:</strong> Send campaign funds to <code>0xe313E052009503A232A4C369B1200497602dE3F9</code></p>
                 </div>
 
                 <div class="form-group">
@@ -327,8 +336,8 @@
     </div>
 
     <script>
-        // API Configuration - UPDATE THIS TO YOUR BACKEND URL
-        const API_BASE_URL = 'http://localhost:8080'; // Change to your backend URL
+        // API Configuration - Live Backend
+        const API_BASE_URL = 'http://34.75.24.60:8080';
         const API_ENDPOINT = `${API_BASE_URL}/advertiser`;
 
         const form = document.getElementById('advertiserForm');
