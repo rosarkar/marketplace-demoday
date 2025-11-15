@@ -6,6 +6,86 @@
     <title>Advertiser Sign Up - Canvas Protocol</title>
     <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
     <style>
+        /* Demo Navigation Dropdown */
+        .demo-nav-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+        }
+
+        .demo-nav-button {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            color: white;
+            border: 2px solid rgba(102, 126, 234, 0.5);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .demo-nav-button:hover {
+            background: rgba(0, 0, 0, 0.85);
+            border-color: #667eea;
+            transform: translateY(-1px);
+        }
+
+        .demo-nav-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 8px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            min-width: 220px;
+            display: none;
+            overflow: hidden;
+        }
+
+        .demo-nav-dropdown.active {
+            display: block;
+        }
+
+        .demo-nav-section {
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .demo-nav-section:last-child {
+            border-bottom: none;
+        }
+
+        .demo-nav-section-title {
+            padding: 10px 16px;
+            background: #f7fafc;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #718096;
+        }
+
+        .demo-nav-dropdown a {
+            display: block;
+            padding: 10px 16px;
+            color: #2d3748;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .demo-nav-dropdown a:hover {
+            background: #f7fafc;
+            color: #667eea;
+            padding-left: 20px;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -262,18 +342,40 @@
             color: #1a1a1a;
             line-height: 1.5;
         }
-
-        .info-box code {
-            background: #f0f0f0;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: 'Courier New', monospace;
-            font-size: 11px;
-            word-break: break-all;
-        }
     </style>
 </head>
 <body>
+    <!-- Demo Navigation -->
+    <div class="demo-nav-container">
+        <button class="demo-nav-button" onclick="toggleDemoNav()">
+            🎯 Demo Nav
+        </button>
+        <div class="demo-nav-dropdown" id="demoNavDropdown">
+            <div class="demo-nav-section">
+                <div class="demo-nav-section-title">Publisher Site</div>
+                <a href="index.html">Home</a>
+                <a href="about.html">About</a>
+                <a href="article-bitcoin.html">Bitcoin Article</a>
+                <a href="article-ai.html">AI Article</a>
+                <a href="article-defi.html">DeFi Article</a>
+            </div>
+            <div class="demo-nav-section">
+                <div class="demo-nav-section-title">Publisher Tools</div>
+                <a href="publisher-signup.html">Publisher Signup</a>
+                <a href="publisher-dashboard.html">Publisher Dashboard</a>
+            </div>
+            <div class="demo-nav-section">
+                <div class="demo-nav-section-title">Advertiser Tools</div>
+                <a href="advertiser-signup.html">Advertiser Signup</a>
+                <a href="advertiser-dashboard.html">Advertiser Dashboard</a>
+            </div>
+            <div class="demo-nav-section">
+                <div class="demo-nav-section-title">Widget Demo</div>
+                <a href="canvas-widget.html">CAPTCHA Widget</a>
+            </div>
+        </div>
+    </div>
+
     <div class="signup-container">
         <div class="signup-header">
             <div class="logo">🎨 Canvas Protocol</div>
@@ -293,7 +395,6 @@
             <form id="advertiserForm">
                 <div class="info-box">
                     <p><strong>Note:</strong> You'll need an Ethereum wallet address to create campaigns and receive verification data onchain.</p>
-                    <p><strong>Deposit Funds:</strong> Send campaign funds to <code>0xe313E052009503A232A4C369B1200497602dE3F9</code></p>
                 </div>
 
                 <div class="form-group">
@@ -336,8 +437,8 @@
     </div>
 
     <script>
-        // API Configuration - Live Backend
-        const API_BASE_URL = 'http://34.75.24.60:8080';
+        // API Configuration - UPDATE THIS TO YOUR BACKEND URL
+        const API_BASE_URL = 'http://localhost:8080'; // Change to your backend URL
         const API_ENDPOINT = `${API_BASE_URL}/advertiser`;
 
         const form = document.getElementById('advertiserForm');
@@ -466,6 +567,23 @@
                 e.target.style.borderColor = '#ef4444';
             } else {
                 e.target.style.borderColor = '#e0e0e0';
+            }
+        });
+
+        // Demo Navigation Functions
+        function toggleDemoNav() {
+            const dropdown = document.getElementById('demoNavDropdown');
+            dropdown.classList.toggle('active');
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const container = document.querySelector('.demo-nav-container');
+            if (container && !container.contains(event.target)) {
+                const dropdown = document.getElementById('demoNavDropdown');
+                if (dropdown) {
+                    dropdown.classList.remove('active');
+                }
             }
         });
     </script>
