@@ -66,6 +66,37 @@
     </style>
 </head>
 <body>
+    <!-- Demo Navigation -->
+    <div class="demo-nav-container">
+        <button class="demo-nav-button" onclick="toggleDemoNav()">
+            🎯 Demo Nav
+        </button>
+        <div class="demo-nav-dropdown" id="demoNavDropdown">
+            <div class="demo-nav-section">
+                <div class="demo-nav-section-title">Publisher Site</div>
+                <a href="index.html">Home</a>
+                <a href="about.html">About</a>
+                <a href="article-bitcoin.html">Bitcoin Article</a>
+                <a href="article-ai.html">AI Article</a>
+                <a href="article-defi.html">DeFi Article</a>
+            </div>
+            <div class="demo-nav-section">
+                <div class="demo-nav-section-title">Publisher Tools</div>
+                <a href="publisher-signup.html">Publisher Signup</a>
+                <a href="publisher-dashboard.html">Publisher Dashboard</a>
+            </div>
+            <div class="demo-nav-section">
+                <div class="demo-nav-section-title">Advertiser Tools</div>
+                <a href="advertiser-signup.html">Advertiser Signup</a>
+                <a href="advertiser-dashboard.html">Advertiser Dashboard</a>
+            </div>
+            <div class="demo-nav-section">
+                <div class="demo-nav-section-title">Widget Demo</div>
+                <a href="canvas-widget.html">CAPTCHA Widget</a>
+            </div>
+        </div>
+    </div>
+
     <!-- Canvas Widget Overlay -->
     <div class="canvas-overlay" id="canvasOverlay">
         <div class="canvas-overlay-content">
@@ -173,7 +204,7 @@
         // Canvas Protocol Configuration
         // ==========================================
         
-        const API_BASE_URL = 'http://34.75.24.60:8080'; // Live API endpoint
+        const API_BASE_URL = 'http://localhost:8080'; // UPDATE THIS FOR PRODUCTION
         
         // Verification token management
         const VERIFICATION_TOKEN = 'canvas_verified';
@@ -464,6 +495,26 @@
         document.getElementById('canvasOverlay').addEventListener('click', function(e) {
             if (e.target === this) {
                 console.log('[Canvas] ℹ️  Please complete verification to continue');
+            }
+        });
+
+        // ==========================================
+        // Demo Navigation Dropdown
+        // ==========================================
+
+        function toggleDemoNav() {
+            const dropdown = document.getElementById('demoNavDropdown');
+            dropdown.classList.toggle('active');
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const container = document.querySelector('.demo-nav-container');
+            if (container && !container.contains(event.target)) {
+                const dropdown = document.getElementById('demoNavDropdown');
+                if (dropdown) {
+                    dropdown.classList.remove('active');
+                }
             }
         });
     </script>
