@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -151,679 +152,480 @@
             color: #666;
         }
 
-        .workout-badge {
-            text-align: center;
-            margin-bottom: 16px;
+        .timer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
             padding: 12px;
-            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-            border-radius: 12px;
-            border: 2px solid #10b981;
-        }
-
-        .workout-type {
-            font-size: 16px;
-            font-weight: 700;
-            color: #10b981;
-            margin-bottom: 4px;
-        }
-
-        .workout-bpm {
-            font-size: 13px;
-            color: #666;
-        }
-
-        .fitness-tip {
-            text-align: center;
-            margin-bottom: 16px;
-            padding: 10px;
-            background: #f0fdf4;
+            background: #f8f9fa;
             border-radius: 10px;
-            font-size: 11px;
-            color: #666;
-            font-style: italic;
-        }
-
-        .score-display {
-            text-align: center;
             margin-bottom: 16px;
+            font-weight: 600;
+            color: #1a1a1a;
         }
 
-        .score-label {
-            font-size: 12px;
-            color: #666;
-            margin-bottom: 4px;
-        }
-
-        .score-value {
-            font-size: 28px;
-            font-weight: 700;
-            color: #10b981;
-        }
-
-        .tap-area {
+        .game-canvas {
+            flex: 1;
+            background: #f8f9fa;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             position: relative;
-            width: 100%;
-            height: 250px;
-            background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
-            border-radius: 16px;
-            margin-bottom: 16px;
-            overflow: hidden;
-            border: 3px solid #e5e7eb;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            min-height: 300px;
         }
 
-        .tap-button {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        .crypto-vault-game {
+            width: 100%;
+            height: 100%;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            padding: 20px;
+        }
+
+        .vault-item {
+            background: white;
+            border: 3px solid #e0e0e0;
+            border-radius: 12px;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            font-size: 48px;
-            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);
-            transition: all 0.1s ease;
+            cursor: pointer;
+            transition: all 0.2s;
+            padding: 10px;
             user-select: none;
         }
 
-        .tap-button:active {
-            transform: scale(0.9);
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+        .vault-item:hover {
+            border-color: #10b981;
+            transform: translateY(-2px);
         }
 
-        .beat-indicator {
-            position: absolute;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
+        .vault-item.collected {
             background: #10b981;
-            opacity: 0;
+            border-color: #10b981;
+            transform: scale(0.9);
+            opacity: 0.5;
+            pointer-events: none;
         }
 
-        .beat-indicator.pulse {
-            animation: beatPulse 0.3s ease;
+        .vault-item-icon {
+            font-size: 32px;
+            margin-bottom: 6px;
         }
 
-        @keyframes beatPulse {
-            0% { opacity: 1; transform: translateX(-50%) scale(1); }
-            100% { opacity: 0; transform: translateX(-50%) scale(2); }
-        }
-
-        .success-section {
-            display: none;
-            padding: 30px 20px;
+        .vault-item-name {
+            font-size: 11px;
+            font-weight: 600;
+            color: #1a1a1a;
             text-align: center;
+        }
+
+        .success-state {
+            display: none;
             flex-direction: column;
+            align-items: center;
             justify-content: center;
+            padding: 40px 20px;
+            text-align: center;
             flex: 1;
         }
 
-        .success-section.active {
+        .success-state.active {
             display: flex;
         }
 
         .success-icon {
-            font-size: 64px;
-            margin-bottom: 20px;
+            font-size: 80px;
+            margin-bottom: 24px;
+            animation: bounceIn 0.6s ease-out;
         }
 
-        .success-section h3 {
-            font-size: 22px;
+        @keyframes bounceIn {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .success-state h3 {
+            font-size: 24px;
             color: #1a1a1a;
             margin-bottom: 12px;
         }
 
-        .success-section p {
+        .success-state p {
             color: #666;
             font-size: 14px;
-            margin-bottom: 24px;
+            margin-bottom: 8px;
             line-height: 1.5;
         }
 
-        .proceed-btn {
-            width: 100%;
-            background: #10b981;
-            color: white;
-            border: none;
-            padding: 16px;
-            font-size: 16px;
-            font-weight: 600;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 4px 12px rgba(16,185,129,0.3);
+        .reward-amount {
+            background: #f0fff4;
+            color: #10b981;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 18px;
+            margin-top: 16px;
         }
 
-        .proceed-btn:active {
-            transform: scale(0.98);
+        .error-message {
+            background: #fee;
+            border: 1px solid #fcc;
+            color: #c00;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 16px 20px;
+            font-size: 13px;
+            display: none;
         }
 
-        .spinner {
-            border: 3px solid rgba(255,255,255,0.3);
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #10b981;
             border-radius: 50%;
-            border-top: 3px solid white;
-            width: 20px;
-            height: 20px;
-            animation: spin 0.8s linear infinite;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
         }
 
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-
-        .progress-dots {
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-            padding: 20px 0;
-        }
-
-        .dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #e0e0e0;
-        }
-
-        .dot.active {
-            background: #10b981;
-        }
-
-        .footer {
-            padding: 16px;
-            text-align: center;
-            border-top: 1px solid #e0e0e0;
-            flex-shrink: 0;
-        }
-
-        .footer-text {
-            font-size: 11px;
-            color: #999;
-        }
-
-        .footer-link {
-            color: #10b981;
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        .promo-banner {
-            text-align: center;
-            padding: 12px;
-            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-            border-radius: 12px;
-            margin-top: 12px;
-        }
-
-        .promo-text {
-            font-size: 11px;
-            color: #666;
-            margin-bottom: 6px;
-        }
-
-        .promo-code {
-            font-size: 16px;
-            font-weight: 800;
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: 2px;
-        }
-
-        @media (min-width: 768px) {
-            .widget-container {
-                border-radius: 16px;
-            }
-        }
-
-        @media (max-width: 767px) {
-            body {
-                background: white;
-            }
-
-            .widget-container {
-                max-width: 100%;
-                max-height: 100vh;
-            }
-
-            .tap-button {
-                width: 140px;
-                height: 140px;
-                font-size: 42px;
-            }
-        }
     </style>
 </head>
 <body>
     <div class="widget-container">
-        <div class="ad-section">
-            <div class="brand-logo">💪</div>
-            <h2>FitLife Pro</h2>
-            <p>Transform Your Body, Transform Your Life</p>
+        <!-- Ad Section -->
+        <div class="ad-section" id="adSection">
+            <div class="brand-logo" id="brandLogo">🎨</div>
+            <h2 id="brandName">Canvas Protocol</h2>
+            <p id="brandTagline">Building the future of human verification</p>
         </div>
 
-        <div class="progress-dots">
-            <div class="dot active" id="dot1"></div>
-            <div class="dot" id="dot2"></div>
-            <div class="dot" id="dot3"></div>
-        </div>
-
+        <!-- Content Section -->
         <div class="content-section">
+            <!-- Error Message -->
+            <div class="error-message" id="errorMessage"></div>
+
+            <!-- Initial State -->
             <div class="initial-state" id="initialState">
-                <h3>Verify You're Human</h3>
-                <p>Complete a quick rhythm challenge to continue</p>
-                <button class="verify-btn" onclick="beginVerification()">
-                    <span>Begin Verification</span>
+                <h3>Verify you're human</h3>
+                <p>Complete a quick interactive game to access this content. The publisher earns revenue, and you help support quality content!</p>
+                <button class="verify-btn" id="startBtn">
+                    <span>🎮</span>
+                    <span>Start Verification</span>
                 </button>
             </div>
 
-            <div class="game-section" id="gameState">
+            <!-- Game Section -->
+            <div class="game-section" id="gameSection">
                 <div class="game-header">
-                    <h3>Match the Workout Rhythm</h3>
-                    <p>Tap in sync with the beat</p>
+                    <h3>Collect all Bitcoin!</h3>
+                    <p>Tap the Bitcoin symbols as fast as you can</p>
                 </div>
 
-                <div class="workout-badge" id="workoutBadge"></div>
-
-                <div class="fitness-tip" id="fitnessTip"></div>
-
-                <div class="score-display">
-                    <div class="score-label">Perfect Beats</div>
-                    <div class="score-value"><span id="score">0</span> / <span id="target">8</span></div>
+                <div class="timer" id="timer">
+                    <span>⏱️</span>
+                    <span id="timeDisplay">5.0s</span>
                 </div>
 
-                <div class="tap-area" id="tapArea">
-                    <div class="beat-indicator" id="beatIndicator"></div>
-                    <div class="tap-button">💪</div>
-                </div>
-
-                <div class="promo-banner">
-                    <div class="promo-text">Join FitLife Pro and get:</div>
-                    <div class="promo-code">30 DAYS FREE</div>
+                <div class="game-canvas">
+                    <div class="crypto-vault-game" id="gameGrid"></div>
                 </div>
             </div>
 
-            <div class="success-section" id="successState">
-                <div class="success-icon">🏆</div>
-                <h3>Workout Complete!</h3>
-                <p>You've successfully completed the challenge. Click below to continue to the site.</p>
-                <button class="proceed-btn" onclick="proceedToSite()">
-                    <span>Proceed to Site</span>
-                </button>
-            </div>
-        </div>
-
-        <div class="footer">
-            <div class="footer-text">
-                Secured by <a href="#" class="footer-link">Canvas Protocol</a>
+            <!-- Success State -->
+            <div class="success-state" id="successState">
+                <div class="success-icon">✅</div>
+                <h3>Verification Complete!</h3>
+                <p>You've successfully verified you're human.</p>
+                <p>The publisher has earned revenue for this verification.</p>
+                <div class="reward-amount" id="rewardAmount">Processing...</div>
+                <div class="loading-spinner" id="processingSpinner" style="display: none;"></div>
             </div>
         </div>
     </div>
 
     <script>
-        // Canvas Protocol API Configuration
-        const API_BASE_URL = 'http://34.75.24.60:8080'; // Your Canvas Protocol API
+        // API Configuration - UPDATE THIS
+        const API_BASE_URL = 'http://localhost:8080';
         
-        // Dynamic configuration - will be loaded from API
-        let config = {
-            publisherAddress: null,
-            campaignId: null,
-            costPerCaptchaWei: null
-        };
-        
+        // Get parameters from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const PUBLISHER_ADDRESS = urlParams.get('publisherAddress');
+        const CAMPAIGN_ID = urlParams.get('campaignId');
+
+        // State
         let captchaId = null;
+        let campaignData = null;
+        let startTime = null;
+        let gameTime = 5.0;
+        let timerInterval = null;
 
-        // Get publisher address from URL parameter
-        function getPublisherAddressFromURL() {
-            const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get('publisherAddress');
-        }
-
-        // Fetch publisher's assigned campaign
-        async function fetchCampaignAssignment(publisherAddress) {
-            try {
-                console.log('[Canvas] Fetching campaign assignment for:', publisherAddress);
-                
-                const response = await fetch(`${API_BASE_URL}/publisher/${publisherAddress}/campaign`);
-                
-                if (!response.ok) {
-                    throw new Error(`Failed to fetch campaign: ${response.status}`);
-                }
-                
-                const data = await response.json();
-                
-                if (!data.assignment.campaign_id) {
-                    throw new Error('No campaign assigned to this publisher');
-                }
-                
-                console.log('[Canvas] ✓ Campaign assignment loaded:', data.assignment);
-                
-                return {
-                    campaignId: data.assignment.campaign_id,
-                    campaignName: data.assignment.campaign_name,
-                    costPerCaptchaWei: data.assignment.cost_per_captcha_wei
-                };
-                
-            } catch (error) {
-                console.error('[Canvas] Error fetching campaign assignment:', error);
-                throw error;
-            }
-        }
-
-        // Initialize configuration on page load
-        async function initializeConfig() {
-            try {
-                // Get publisher address from URL
-                config.publisherAddress = getPublisherAddressFromURL();
-                
-                if (!config.publisherAddress) {
-                    throw new Error('Publisher address not provided');
-                }
-                
-                console.log('[Canvas] Initializing with publisher:', config.publisherAddress);
-                
-                // Fetch assigned campaign
-                const assignment = await fetchCampaignAssignment(config.publisherAddress);
-                config.campaignId = assignment.campaignId;
-                config.costPerCaptchaWei = assignment.costPerCaptchaWei;
-                
-                console.log('[Canvas] ✓ Configuration loaded successfully');
-                console.log('[Canvas] → Campaign:', assignment.campaignName);
-                console.log('[Canvas] → Cost per CAPTCHA:', config.costPerCaptchaWei, 'wei');
-                
-                return true;
-                
-            } catch (error) {
-                console.error('[Canvas] Configuration initialization failed:', error);
-                alert('Failed to load CAPTCHA configuration. Please contact the site administrator.');
-                return false;
-            }
-        }
-
-        // Initialize on page load
-        window.addEventListener('DOMContentLoaded', async () => {
-            const initialized = await initializeConfig();
-            if (!initialized) {
-                // Disable the verify button if config failed
-                document.querySelector('.verify-btn').disabled = true;
-                document.querySelector('.verify-btn').textContent = 'Configuration Error';
-            }
-        });
-
-        // Workout types with different BPMs
-        const workouts = [
-            { name: '🔥 HIIT Workout', bpm: 140, icon: '🔥', tip: 'High-intensity intervals burn more calories in less time' },
-            { name: '🏃 Cardio Blast', bpm: 120, icon: '🏃', tip: 'Regular cardio strengthens your heart and lungs' },
-            { name: '⚡ Power Training', bpm: 100, icon: '⚡', tip: 'Strength training boosts metabolism even at rest' },
-            { name: '🎯 Endurance Mode', bpm: 110, icon: '🎯', tip: 'Build stamina with consistent moderate-intensity exercise' }
+        // Game state
+        const bitcoinItems = [
+            { emoji: '₿', name: 'Bitcoin' },
+            { emoji: '₿', name: 'Bitcoin' },
+            { emoji: '₿', name: 'Bitcoin' },
+            { emoji: '₿', name: 'Bitcoin' }
         ];
 
-        const selectedWorkout = workouts[Math.floor(Math.random() * workouts.length)];
-        const bpm = selectedWorkout.bpm;
-        const beatInterval = 60000 / bpm;
-        const targetBeats = Math.floor(Math.random() * 3) + 6; // 6-8 beats
+        const distractorItems = [
+            { emoji: '💰', name: 'Gold' },
+            { emoji: '💎', name: 'Diamond' },
+            { emoji: '🪙', name: 'Coin' },
+            { emoji: '💵', name: 'Dollar' },
+            { emoji: '🏆', name: 'Trophy' },
+            { emoji: '⭐', name: 'Star' }
+        ];
 
-        let gameState = {
-            score: 0,
-            lastBeatTime: 0,
-            beatTimings: [],
-            beatIntervalId: null,
-            audioContext: null,
-            sessionId: null
-        };
+        let collectedCount = 0;
 
-        function initAudioContext() {
-            if (!gameState.audioContext) {
-                gameState.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                if (gameState.audioContext.state === 'suspended') {
-                    gameState.audioContext.resume();
-                }
+        // Initialize
+        async function init() {
+            console.log('[Canvas Widget] Initializing...');
+            console.log('[Canvas Widget] Publisher:', PUBLISHER_ADDRESS);
+            console.log('[Canvas Widget] Campaign:', CAMPAIGN_ID);
+
+            if (!PUBLISHER_ADDRESS) {
+                showError('Missing publisher address');
+                return;
             }
-            return gameState.audioContext;
+
+            // Fetch campaign details if provided
+            if (CAMPAIGN_ID) {
+                await fetchCampaignDetails();
+            }
+
+            // Setup event listeners
+            document.getElementById('startBtn').addEventListener('click', startVerification);
         }
 
-        function playBeat() {
+        async function fetchCampaignDetails() {
             try {
-                const ctx = initAudioContext();
-                const oscillator = ctx.createOscillator();
-                const gainNode = ctx.createGain();
-                
-                oscillator.connect(gainNode);
-                gainNode.connect(ctx.destination);
-                
-                oscillator.frequency.value = 800;
-                oscillator.type = 'sine';
-                
-                gainNode.gain.setValueAtTime(0.3, ctx.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
-                
-                oscillator.start(ctx.currentTime);
-                oscillator.stop(ctx.currentTime + 0.1);
-            } catch (e) {
-                console.log('Audio playback not available');
-            }
+                const response = await fetch(`${API_BASE_URL}/campaigns/${CAMPAIGN_ID}`);
+                const data = await response.json();
 
-            document.getElementById('beatIndicator').classList.add('pulse');
-            setTimeout(() => {
-                document.getElementById('beatIndicator').classList.remove('pulse');
-            }, 300);
-
-            gameState.lastBeatTime = Date.now();
-        }
-
-        function initializeGame() {
-            document.getElementById('workoutBadge').innerHTML = `
-                <div class="workout-type">${selectedWorkout.name}</div>
-                <div class="workout-bpm">${bpm} BPM</div>
-            `;
-
-            document.getElementById('fitnessTip').textContent = `💡 ${selectedWorkout.tip}`;
-            document.getElementById('target').textContent = targetBeats;
-
-            // Start beat rhythm
-            gameState.beatIntervalId = setInterval(playBeat, beatInterval);
-            setTimeout(playBeat, 500);
-
-            // Setup tap handlers
-            document.getElementById('tapArea').addEventListener('click', handleTap);
-            document.getElementById('tapArea').addEventListener('touchend', (e) => {
-                e.preventDefault();
-                handleTap();
-            });
-        }
-
-        function handleTap() {
-            const tapTime = Date.now();
-            const timeSinceLastBeat = tapTime - gameState.lastBeatTime;
-            const tolerance = beatInterval * 0.35; // 35% tolerance
-
-            if (Math.abs(timeSinceLastBeat) < tolerance || 
-                Math.abs(timeSinceLastBeat - beatInterval) < tolerance) {
-                
-                if (navigator.vibrate) {
-                    navigator.vibrate(20);
-                }
-
-                gameState.score++;
-                document.getElementById('score').textContent = gameState.score;
-                gameState.beatTimings.push(timeSinceLastBeat);
-
-                if (gameState.score >= targetBeats) {
-                    checkCompletion();
-                }
-            }
-        }
-
-        function checkCompletion() {
-            if (gameState.beatTimings.length < 3) return;
-
-            // Check for human-like variation in timing
-            const avgTiming = gameState.beatTimings.reduce((a, b) => a + b, 0) / gameState.beatTimings.length;
-            const variance = gameState.beatTimings.reduce((sum, time) => {
-                return sum + Math.pow(time - avgTiming, 2);
-            }, 0) / gameState.beatTimings.length;
-
-            // Humans have natural variation (not perfect, but not random)
-            const hasHumanRhythm = variance > 100 && variance < 50000;
-
-            if (hasHumanRhythm) {
-                clearInterval(gameState.beatIntervalId);
-
-                // Play success sound
-                try {
-                    const ctx = initAudioContext();
-                    [600, 800, 1000].forEach((freq, i) => {
-                        setTimeout(() => {
-                            const oscillator = ctx.createOscillator();
-                            const gainNode = ctx.createGain();
-                            oscillator.connect(gainNode);
-                            gainNode.connect(ctx.destination);
-                            oscillator.frequency.value = freq;
-                            oscillator.type = 'sine';
-                            gainNode.gain.setValueAtTime(0.3, ctx.currentTime);
-                            gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
-                            oscillator.start(ctx.currentTime);
-                            oscillator.stop(ctx.currentTime + 0.2);
-                        }, i * 100);
-                    });
-                } catch (e) {}
-
-                if (navigator.vibrate) {
-                    navigator.vibrate([50, 100, 50]);
-                }
-
-                setTimeout(() => {
-                    document.getElementById('gameState').classList.remove('active');
-                    document.getElementById('successState').classList.add('active');
-                    document.getElementById('dot3').classList.add('active');
+                if (data.success) {
+                    campaignData = data.campaign;
+                    console.log('[Canvas Widget] Campaign loaded:', campaignData);
                     
-                    recordCompletion();
-                }, 500);
-            } else {
-                // Reset for bot-like behavior
-                gameState.score = 0;
-                gameState.beatTimings = [];
-                document.getElementById('score').textContent = gameState.score;
+                    // Update ad section with campaign details
+                    // Note: In production, you'd fetch advertiser branding
+                    document.getElementById('brandName').textContent = campaignData.name;
+                } else {
+                    throw new Error('Failed to load campaign');
+                }
+            } catch (error) {
+                console.error('[Canvas Widget] Error fetching campaign:', error);
+                // Continue with default branding
             }
         }
 
-        async function beginVerification() {
-            const btn = event.target;
-            btn.disabled = true;
-            btn.innerHTML = '<div class="spinner"></div><span>Connecting...</span>';
+        async function startVerification() {
+            console.log('[Canvas Widget] Starting verification...');
             
+            const startBtn = document.getElementById('startBtn');
+            startBtn.disabled = true;
+            startBtn.innerHTML = '<div class="loading-spinner"></div><span>Starting...</span>';
+
             try {
-                // Verify config is loaded
-                if (!config.campaignId || !config.publisherAddress) {
-                    throw new Error('Configuration not loaded');
-                }
-                
-                // CHECKPOINT 1: Record Ad Impression via API
-                console.log('[Canvas] CHECKPOINT 1: Recording ad impression...');
-                
-                const sessionId = generateSessionId();
-                gameState.sessionId = sessionId;
-                
+                // Call API to start captcha
                 const response = await fetch(`${API_BASE_URL}/captcha/start`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        campaignId: config.campaignId,
-                        publisherAddress: config.publisherAddress,
-                        sessionId: sessionId,
-                        userIpHash: null // Optional: add IP hashing on your backend
+                        campaignId: CAMPAIGN_ID,
+                        publisherAddress: PUBLISHER_ADDRESS,
+                        sessionId: generateSessionId(),
+                        userIpHash: null // Optional: Could add IP hashing on backend
                     })
                 });
 
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.error || `API error: ${response.status}`);
+                const data = await response.json();
+                console.log('[Canvas Widget] Start captcha response:', data);
+
+                if (!response.ok || !data.success) {
+                    throw new Error(data.error || 'Failed to start verification');
                 }
 
-                const data = await response.json();
                 captchaId = data.captcha.id;
-                
-                console.log('[Canvas] ✓ Ad impression recorded:', captchaId);
-                console.log('[Canvas] → Advertiser (FitLife Pro) charged for impression');
-                console.log('[Canvas] → Payment amount:', data.captcha.payment_amount_wei, 'wei');
-                console.log('[Canvas] → Starting CAPTCHA game...');
-                
-                setTimeout(() => {
-                    document.getElementById('initialState').style.display = 'none';
-                    document.getElementById('gameState').classList.add('active');
-                    document.getElementById('dot2').classList.add('active');
-                    initializeGame();
-                }, 1000);
-                
+                console.log('[Canvas Widget] Captcha ID:', captchaId);
+
+                // Start the game
+                startGame();
+
             } catch (error) {
-                console.error('[Canvas] Error at checkpoint 1:', error);
-                btn.disabled = false;
-                btn.innerHTML = '<span>Begin Verification</span>';
-                alert('Connection error: ' + error.message);
+                console.error('[Canvas Widget] Error starting verification:', error);
+                showError(error.message);
+                startBtn.disabled = false;
+                startBtn.innerHTML = '<span>🎮</span><span>Start Verification</span>';
             }
         }
 
-        function generateSessionId() {
-            return 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        function startGame() {
+            // Hide initial state, show game
+            document.getElementById('initialState').style.display = 'none';
+            document.getElementById('gameSection').classList.add('active');
+
+            // Initialize game
+            setupGameGrid();
+            startTimer();
+            startTime = Date.now();
         }
 
-        async function recordCompletion() {
-            if (!captchaId) {
-                console.error('[Canvas] No captcha ID available');
-                return;
+        function setupGameGrid() {
+            const grid = document.getElementById('gameGrid');
+            grid.innerHTML = '';
+
+            // Combine bitcoin and distractor items
+            const allItems = [
+                ...bitcoinItems,
+                ...shuffleArray(distractorItems).slice(0, 8)
+            ];
+
+            // Shuffle and render
+            shuffleArray(allItems).forEach((item, index) => {
+                const itemEl = document.createElement('div');
+                itemEl.className = 'vault-item';
+                itemEl.dataset.index = index;
+                itemEl.dataset.isBitcoin = item.emoji === '₿';
+
+                itemEl.innerHTML = `
+                    <div class="vault-item-icon">${item.emoji}</div>
+                    <div class="vault-item-name">${item.name}</div>
+                `;
+
+                itemEl.addEventListener('click', () => handleItemClick(itemEl, item));
+                grid.appendChild(itemEl);
+            });
+        }
+
+        function handleItemClick(element, item) {
+            if (element.classList.contains('collected')) return;
+
+            if (item.emoji === '₿') {
+                // Correct item
+                element.classList.add('collected');
+                collectedCount++;
+
+                console.log(`[Canvas Widget] Collected ${collectedCount}/${bitcoinItems.length}`);
+
+                if (collectedCount === bitcoinItems.length) {
+                    // Game complete!
+                    completeVerification();
+                }
+            } else {
+                // Wrong item - could add penalty or feedback
+                element.style.animation = 'shake 0.5s';
+                setTimeout(() => {
+                    element.style.animation = '';
+                }, 500);
             }
+        }
+
+        function startTimer() {
+            const timeDisplay = document.getElementById('timeDisplay');
+            
+            timerInterval = setInterval(() => {
+                const elapsed = (Date.now() - startTime) / 1000;
+                const remaining = Math.max(0, gameTime - elapsed);
+                timeDisplay.textContent = `${remaining.toFixed(1)}s`;
+
+                if (remaining <= 0 && collectedCount < bitcoinItems.length) {
+                    // Time's up but not completed - could handle timeout
+                    clearInterval(timerInterval);
+                }
+            }, 100);
+        }
+
+        async function completeVerification() {
+            clearInterval(timerInterval);
+            
+            const completionTime = ((Date.now() - startTime) / 1000).toFixed(2);
+            console.log(`[Canvas Widget] Game completed in ${completionTime}s`);
+
+            // Show success state
+            document.getElementById('gameSection').classList.remove('active');
+            document.getElementById('successState').classList.add('active');
+            document.getElementById('processingSpinner').style.display = 'block';
 
             try {
-                // CHECKPOINT 2: Record CAPTCHA Completion & Trigger Payment via API
-                console.log('[Canvas] CHECKPOINT 2: Recording completion...');
-                
+                // Call API to complete captcha
                 const response = await fetch(`${API_BASE_URL}/captcha/${captchaId}/complete`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        sessionId: gameState.sessionId || null
+                        sessionId: generateSessionId()
                     })
                 });
 
-                if (!response.ok) {
-                    throw new Error(`API error: ${response.status}`);
+                const data = await response.json();
+                console.log('[Canvas Widget] Complete captcha response:', data);
+
+                if (!response.ok || !data.success) {
+                    throw new Error(data.error || 'Failed to complete verification');
                 }
 
-                const data = await response.json();
+                // Show reward amount
+                const paymentWei = data.paymentAmountWei || data.captcha.payment_amount_wei;
+                const paymentEth = (parseFloat(paymentWei) / 1e18).toFixed(6);
                 
-                console.log('[Canvas] ✓ Completion recorded:', data.captcha.id);
-                console.log('[Canvas] → Status:', data.captcha.status);
-                console.log('[Canvas] → Payment processed:', data.paymentProcessed);
-                console.log('[Canvas] → Payment amount:', data.paymentAmountWei, 'wei');
-                console.log('[Canvas] → Publisher receives 60% share');
-                console.log('[Canvas] → Operators receive 20% for validation');
-                console.log('[Canvas] → Protocol keeps 20% for operations');
-                
+                document.getElementById('processingSpinner').style.display = 'none';
+                document.getElementById('rewardAmount').textContent = 
+                    `Publisher earned ${paymentEth} ETH`;
+
+                // Notify parent window that verification is complete
+                window.parent.postMessage({
+                    type: 'CAPTCHA_COMPLETE',
+                    captchaId: captchaId,
+                    completionTime: completionTime,
+                    paymentWei: paymentWei
+                }, '*');
+
+                console.log('[Canvas Widget] ✅ Verification complete!');
+
             } catch (error) {
-                console.error('[Canvas] Error at checkpoint 2:', error);
+                console.error('[Canvas Widget] Error completing verification:', error);
+                document.getElementById('processingSpinner').style.display = 'none';
+                document.getElementById('rewardAmount').textContent = 'Error processing payment';
+                document.getElementById('rewardAmount').style.background = '#fee';
+                document.getElementById('rewardAmount').style.color = '#c00';
             }
         }
 
-        function proceedToSite() {
-            console.log('[Canvas Widget] Sending completion message to parent');
-            
-            // Send message to parent window
-            window.parent.postMessage({ 
-                type: 'CAPTCHA_COMPLETE',
-                timestamp: Date.now()
-            }, '*');
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
         }
+
+        function generateSessionId() {
+            return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        }
+
+        function showError(message) {
+            const errorEl = document.getElementById('errorMessage');
+            errorEl.textContent = `Error: ${message}`;
+            errorEl.style.display = 'block';
+        }
+
+        // Initialize on load
+        init();
     </script>
 </body>
 </html>
