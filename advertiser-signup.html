@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -75,7 +76,7 @@
         }
 
         .form-group input,
-        .form-group select {
+        .form-group textarea {
             width: 100%;
             padding: 14px;
             border: 2px solid #e0e0e0;
@@ -85,8 +86,13 @@
             transition: all 0.2s;
         }
 
+        .form-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
         .form-group input:focus,
-        .form-group select:focus {
+        .form-group textarea:focus {
             outline: none;
             border-color: #0052FF;
             box-shadow: 0 0 0 3px rgba(0, 82, 255, 0.1);
@@ -128,81 +134,6 @@
             transform: none;
         }
 
-        .test-btn {
-            width: 100%;
-            background: #f5f5f5;
-            color: #666;
-            border: 1px solid #e0e0e0;
-            padding: 12px;
-            font-size: 14px;
-            font-weight: 600;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin-bottom: 12px;
-        }
-
-        .test-btn:hover {
-            background: #e0e0e0;
-        }
-
-        .test-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .info-box {
-            background: #f0f4ff;
-            border: 1px solid #0052FF;
-            border-radius: 10px;
-            padding: 16px;
-            margin-bottom: 24px;
-        }
-
-        .info-box p {
-            font-size: 13px;
-            color: #1a1a1a;
-            line-height: 1.5;
-        }
-
-        .info-box strong {
-            color: #0052FF;
-        }
-
-        .benefits-list {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 24px;
-        }
-
-        .benefits-list h3 {
-            font-size: 14px;
-            color: #1a1a1a;
-            margin-bottom: 12px;
-        }
-
-        .benefits-list ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .benefits-list li {
-            font-size: 13px;
-            color: #666;
-            padding: 6px 0;
-            padding-left: 24px;
-            position: relative;
-        }
-
-        .benefits-list li:before {
-            content: "✓";
-            position: absolute;
-            left: 0;
-            color: #10b981;
-            font-weight: bold;
-        }
-
         .error-message {
             background: #fee;
             border: 1px solid #fcc;
@@ -225,31 +156,20 @@
             display: none;
         }
 
-        .warning-message {
-            background: #fff4e6;
-            border: 1px solid #ffa726;
-            color: #e65100;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 16px;
-            font-size: 13px;
-            display: none;
-        }
-
         .loading-spinner {
             display: none;
             text-align: center;
-            padding: 20px;
+            padding: 40px;
         }
 
         .spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #0052FF;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #0052FF;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
             animation: spin 1s linear infinite;
-            margin: 0 auto;
+            margin: 0 auto 20px;
         }
 
         @keyframes spin {
@@ -257,217 +177,198 @@
             100% { transform: rotate(360deg); }
         }
 
-        @media (max-width: 480px) {
-            .signup-header {
-                padding: 30px 24px 24px;
-            }
+        /* Success Popup Modal */
+        .success-popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
 
-            .signup-body {
-                padding: 30px 24px;
+        .success-popup.active {
+            display: flex;
+        }
+
+        .success-popup-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 400px;
+            text-align: center;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
             }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .success-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .success-popup-content h2 {
+            font-size: 24px;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+        }
+
+        .success-popup-content p {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .popup-btn {
+            background: #0052FF;
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .popup-btn:hover {
+            background: #0041CC;
+            transform: translateY(-2px);
+        }
+
+        .info-box {
+            background: #f0f4ff;
+            border: 1px solid #0052FF;
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 24px;
+        }
+
+        .info-box p {
+            font-size: 13px;
+            color: #1a1a1a;
+            line-height: 1.5;
         }
     </style>
 </head>
 <body>
     <div class="signup-container">
         <div class="signup-header">
-            <div class="logo">
-                <span>🎨</span>
-                <span>Canvas Protocol</span>
-            </div>
+            <div class="logo">🎨 Canvas Protocol</div>
             <h1>Advertiser Sign Up</h1>
-            <p>Transform CAPTCHAs into engaging brand experiences</p>
+            <p>Start reaching engaged users through interactive CAPTCHAs</p>
         </div>
 
         <div class="signup-body">
-            <div class="info-box">
-                <p><strong>Create Your Account:</strong> Connect your wallet and brand to start launching CAPTCHA campaigns onchain.</p>
-            </div>
-
-            <div class="benefits-list">
-                <h3>What You'll Get:</h3>
-                <ul>
-                    <li>Create interactive CAPTCHA campaigns</li>
-                    <li>Reach verified human users onchain</li>
-                    <li>Real-time campaign analytics</li>
-                    <li>Blockchain-verified interactions</li>
-                    <li>Pay only for completed CAPTCHAs</li>
-                </ul>
-            </div>
-
             <div id="errorMessage" class="error-message"></div>
             <div id="successMessage" class="success-message"></div>
-            <div id="warningMessage" class="warning-message"></div>
+            
+            <div id="loadingSpinner" class="loading-spinner">
+                <div class="spinner"></div>
+                <p>Creating your account...</p>
+            </div>
 
-            <form id="signupForm">
-                <div class="form-group">
-                    <label for="username">Username *</label>
-                    <input 
-                        type="text" 
-                        id="username" 
-                        name="username"
-                        placeholder="Choose a username"
-                        required
-                        minlength="3"
-                        maxlength="30"
-                        pattern="[a-zA-Z0-9_-]+"
-                    >
-                    <div class="form-note">Letters, numbers, hyphens, and underscores only (3-30 characters)</div>
+            <form id="advertiserForm">
+                <div class="info-box">
+                    <p><strong>Note:</strong> You'll need an Ethereum wallet address to create campaigns and receive verification data onchain.</p>
                 </div>
 
                 <div class="form-group">
-                    <label for="companyName">Company/Brand Name *</label>
-                    <input 
-                        type="text" 
-                        id="companyName" 
-                        name="companyName"
-                        placeholder="e.g., Nike, McDonald's, Acme Corp"
-                        required
-                        maxlength="100"
-                    >
-                    <div class="form-note">Your brand name as it will appear in campaigns</div>
+                    <label>Company Name *</label>
+                    <input type="text" id="companyName" placeholder="e.g., Nike, Coinbase" required minlength="2" maxlength="100">
+                    <div class="form-note">Your brand name as it will appear in CAPTCHAs</div>
                 </div>
 
                 <div class="form-group">
-                    <label for="ethereumAddress">Ethereum Wallet Address *</label>
-                    <input 
-                        type="text" 
-                        id="ethereumAddress" 
-                        name="ethereumAddress"
-                        placeholder="0x..."
-                        required
-                        title="Must be a valid Ethereum address"
-                    >
-                    <div class="form-note">Copy your address directly from MetaMask or your wallet (properly checksummed)</div>
-                    <div id="checksummedAddress" style="margin-top: 8px; padding: 10px; background: #f0f4ff; border-radius: 6px; display: none;">
-                        <span style="font-size: 11px; color: #666; display: block; margin-bottom: 4px;">Checksummed Address:</span>
-                        <code id="checksummedValue" style="font-size: 12px; color: #0052FF; word-break: break-all;"></code>
-                    </div>
+                    <label>Ethereum Address *</label>
+                    <input type="text" id="ethereumAddress" placeholder="0x..." required pattern="^0x[a-fA-F0-9]{40}$">
+                    <div class="form-note">The wallet address where your campaigns will be managed</div>
                 </div>
 
                 <div class="form-group">
-                    <label for="email">Contact Email *</label>
-                    <input 
-                        type="email" 
-                        id="email" 
-                        name="email"
-                        placeholder="advertiser@company.com"
-                        required
-                    >
-                    <div class="form-note">For campaign updates and support</div>
+                    <label>Company Description *</label>
+                    <textarea id="description" placeholder="Brief description of your company and advertising goals..." required minlength="10" maxlength="500"></textarea>
+                    <div class="form-note">This helps us match you with relevant publishers</div>
                 </div>
 
                 <div class="form-group">
-                    <label for="industry">Industry</label>
-                    <select id="industry" name="industry">
-                        <option value="">Select your industry</option>
-                        <option value="technology">Technology</option>
-                        <option value="finance">Finance/Crypto</option>
-                        <option value="retail">Retail/E-commerce</option>
-                        <option value="food-beverage">Food & Beverage</option>
-                        <option value="gaming">Gaming</option>
-                        <option value="healthcare">Healthcare</option>
-                        <option value="education">Education</option>
-                        <option value="entertainment">Entertainment</option>
-                        <option value="other">Other</option>
-                    </select>
+                    <label>Initial Campaign Funds (ETH) *</label>
+                    <input type="number" id="campaignFunds" placeholder="1.0" required min="0.01" step="0.01">
+                    <div class="form-note">You can add more funds later from your dashboard</div>
                 </div>
 
-                <div class="loading-spinner" id="loadingSpinner">
-                    <div class="spinner"></div>
-                    <p style="margin-top: 12px; color: #666;">Creating your account...</p>
-                </div>
-
-                <button type="button" class="test-btn" onclick="testConnection()" id="testBtn">
-                    🔌 Test API Connection
-                </button>
-
-                <button type="submit" class="submit-btn" id="submitBtn">
-                    Create Advertiser Account
-                </button>
+                <button type="submit" class="submit-btn" id="submitBtn">Create Advertiser Account</button>
             </form>
         </div>
     </div>
 
+    <!-- Success Popup -->
+    <div class="success-popup" id="successPopup">
+        <div class="success-popup-content">
+            <div class="success-icon">✅</div>
+            <h2>Account Created Successfully!</h2>
+            <p>Your advertiser account has been created and saved to the blockchain. You can now proceed to your dashboard to create campaigns.</p>
+            <button class="popup-btn" onclick="goToDashboard()">Proceed to Dashboard</button>
+        </div>
+    </div>
+
     <script>
-        console.log('✅ Canvas Protocol Sign-up script loaded');
-        console.log('🔍 Checking if ethers.js is loaded:', typeof ethers !== 'undefined' ? '✅ Yes' : '❌ No');
-        
-        if (typeof ethers === 'undefined') {
-            console.warn('⚠️ ethers.js failed to load from CDN. Using basic address validation.');
-            console.warn('⚠️ Please ensure your address is properly checksummed (copy from MetaMask).');
-            
-            // Simple fallback - just validate format
-            window.ethers = {
-                utils: {
-                    getAddress: function(address) {
-                        if (!address || typeof address !== 'string') {
-                            throw new Error('Invalid address');
-                        }
-                        
-                        // Check format: 0x followed by 40 hex characters
-                        if (!address.match(/^0x[0-9a-fA-F]{40}$/)) {
-                            throw new Error('Invalid address format - must be 0x followed by 40 hex characters');
-                        }
-                        
-                        // Return as-is (user must provide properly checksummed address)
-                        console.log('✅ Address format valid, passing through as-is:', address);
-                        return address;
-                    }
-                }
-            };
-        } else {
-            console.log('✅ ethers.js loaded successfully, version:', ethers.version || 'unknown');
-        }
-        
-        const API_URL = 'http://34.75.24.60:8080/advertiser';
-        const form = document.getElementById('signupForm');
+        // API Configuration - UPDATE THIS TO YOUR BACKEND URL
+        const API_BASE_URL = 'http://localhost:8080'; // Change to your backend URL
+        const API_ENDPOINT = `${API_BASE_URL}/advertiser`;
+
+        const form = document.getElementById('advertiserForm');
         const submitBtn = document.getElementById('submitBtn');
         const errorMessage = document.getElementById('errorMessage');
         const successMessage = document.getElementById('successMessage');
-        const warningMessage = document.getElementById('warningMessage');
         const loadingSpinner = document.getElementById('loadingSpinner');
+        const successPopup = document.getElementById('successPopup');
 
-        form.addEventListener('submit', async (e) => {
+        form.addEventListener('submit', async function(e) {
             e.preventDefault();
-            console.log('🚀 Form submitted');
-            
-            // Clear previous messages
+
+            // Hide previous messages
             errorMessage.style.display = 'none';
             successMessage.style.display = 'none';
-            warningMessage.style.display = 'none';
-            
-            // Get and checksum the Ethereum address
-            let ethereumAddress = document.getElementById('ethereumAddress').value.trim();
-            
-            try {
-                // Checksum the address using ethers.js
-                ethereumAddress = ethers.utils.getAddress(ethereumAddress);
-                console.log('✅ Address checksummed:', ethereumAddress);
-            } catch (checksumError) {
-                console.error('❌ Invalid Ethereum address:', checksumError);
-                showError('Invalid Ethereum address. Please enter a valid address.');
+
+            // Get and validate form data
+            const companyName = document.getElementById('companyName').value.trim();
+            const ethereumAddress = document.getElementById('ethereumAddress').value.trim();
+            const description = document.getElementById('description').value.trim();
+            const campaignFunds = parseFloat(document.getElementById('campaignFunds').value);
+
+            // Validate Ethereum address format
+            if (!/^0x[a-fA-F0-9]{40}$/.test(ethereumAddress)) {
+                showError('Invalid Ethereum address format');
                 return;
             }
-            
-            // Get form data
-            const formData = {
-                name: document.getElementById('companyName').value.trim(),
-                ethereumAddress: ethereumAddress, // Using checksummed address
-                description: `${document.getElementById('companyName').value.trim()} - ${document.getElementById('industry').value || 'General'} | Contact: ${document.getElementById('email').value.trim()} | Username: ${document.getElementById('username').value.trim()}`,
-                campaignFundsWei: "0"
+
+            // Convert ETH to Wei (1 ETH = 10^18 wei)
+            const campaignFundsWei = (campaignFunds * 1e18).toString();
+
+            // Prepare API payload matching backend expectations
+            const payload = {
+                name: companyName,
+                ethereumAddress: ethereumAddress,
+                description: description,
+                campaignFundsWei: campaignFundsWei
             };
 
-            console.log('📝 Form data prepared:', formData);
-
-            // Basic validation
-            if (!formData.name || !formData.ethereumAddress) {
-                console.error('❌ Validation failed: Missing required fields');
-                showError('Please fill in all required fields');
-                return;
-            }
-
-            console.log('✅ Validation passed, submitting to backend...');
+            console.log('📤 Submitting advertiser registration:', payload);
 
             // Show loading state
             submitBtn.disabled = true;
@@ -475,88 +376,47 @@
             form.style.display = 'none';
 
             try {
-                console.log(`📡 Sending POST request to: ${API_URL}`);
-                
-                const response = await fetch(API_URL, {
+                const response = await fetch(API_ENDPOINT, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(formData)
+                    body: JSON.stringify(payload)
                 });
 
-                console.log('📥 Response received:', response.status, response.statusText);
+                console.log('📥 Response status:', response.status);
 
                 if (!response.ok) {
-                    let errorData;
-                    try {
-                        errorData = await response.json();
-                    } catch (e) {
-                        errorData = { error: `Server returned ${response.status}: ${response.statusText}` };
-                    }
-                    console.error('❌ API returned error:', errorData);
-                    throw new Error(errorData.error || `API request failed with status ${response.status}`);
+                    const errorData = await response.json().catch(() => ({
+                        error: `Server returned ${response.status}: ${response.statusText}`
+                    }));
+                    throw new Error(errorData.error || `Failed to create advertiser account`);
                 }
 
                 const result = await response.json();
-                console.log('✅ Success! Backend response:', result);
+                console.log('✅ Account created successfully:', result);
 
-                // Store user info in localStorage
+                // Store advertiser info in localStorage for dashboard access
                 localStorage.setItem('canvasAdvertiser', JSON.stringify({
-                    username: document.getElementById('username').value.trim(),
-                    companyName: formData.name,
-                    ethereumAddress: ethereumAddress, // Using checksummed version
-                    email: document.getElementById('email').value.trim(),
-                    advertiserId: result.id || result.advertiserId || Date.now(),
-                    mode: 'production'
+                    id: result.advertiser.id,
+                    name: result.advertiser.name,
+                    ethereumAddress: result.advertiser.ethereum_address,
+                    description: result.advertiser.description,
+                    campaignFundsWei: result.advertiser.campaign_funds_wei
                 }));
 
-                showSuccess('✅ Account created successfully! Redirecting to dashboard...');
-
-                // Redirect to dashboard after 2 seconds
-                setTimeout(() => {
-                    window.location.href = 'advertiser-dashboard.html';
-                }, 2000);
+                // Hide loading, show success popup
+                loadingSpinner.style.display = 'none';
+                successPopup.classList.add('active');
 
             } catch (error) {
-                console.error('❌ Error caught:', error);
-                console.error('Error name:', error.name);
-                console.error('Error message:', error.message);
+                console.error('❌ Error creating account:', error);
                 
-                // Check if it's a network/CORS error
-                if (error.name === 'TypeError' || error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
-                    console.log('⚠️ Network/CORS error detected - falling back to demo mode');
-                    
-                    // Get checksummed address for demo mode too
-                    let demoAddress = document.getElementById('ethereumAddress').value.trim();
-                    try {
-                        demoAddress = ethers.utils.getAddress(demoAddress);
-                    } catch (e) {
-                        console.error('Invalid address for demo mode:', e);
-                    }
-                    
-                    // Store in localStorage for demo mode
-                    localStorage.setItem('canvasAdvertiser', JSON.stringify({
-                        username: document.getElementById('username').value.trim(),
-                        companyName: document.getElementById('companyName').value.trim(),
-                        ethereumAddress: demoAddress,
-                        email: document.getElementById('email').value.trim(),
-                        advertiserId: Date.now(),
-                        mode: 'demo'
-                    }));
-
-                    showWarning('⚠️ Backend connection failed. Using demo mode. Your data is stored locally but not in the database.');
-                    
-                    setTimeout(() => {
-                        window.location.href = 'advertiser-dashboard.html';
-                    }, 3000);
-                } else {
-                    // Real API error (not network related)
-                    showError(error.message);
-                    loadingSpinner.style.display = 'none';
-                    form.style.display = 'block';
-                    submitBtn.disabled = false;
-                }
+                // Show error
+                showError(error.message || 'Failed to create account. Please try again.');
+                loadingSpinner.style.display = 'none';
+                form.style.display = 'block';
+                submitBtn.disabled = false;
             }
         });
 
@@ -570,118 +430,34 @@
             successMessage.style.display = 'block';
         }
 
-        function showWarning(message) {
-            warningMessage.textContent = message;
-            warningMessage.style.display = 'block';
+        function goToDashboard() {
+            window.location.href = 'advertiser-dashboard.html';
         }
 
-        // Test API connection function
-        async function testConnection() {
-            console.log('🧪 Testing API connection...');
-            const testBtn = document.getElementById('testBtn');
-            testBtn.disabled = true;
-            testBtn.textContent = 'Testing...';
-            
-            errorMessage.style.display = 'none';
-            successMessage.style.display = 'none';
-            warningMessage.style.display = 'none';
-            
-            try {
-                console.log(`📡 Testing connection to: ${API_URL}`);
-                
-                // Try a simple GET or OPTIONS request
-                const response = await fetch(API_URL, {
-                    method: 'GET',
-                });
-                
-                console.log('✅ API response:', response.status, response.statusText);
-                
-                // 404 or 405 is actually good - it means server is reachable and CORS works
-                // The endpoint just doesn't support GET (only POST)
-                if (response.status === 404 || response.status === 405) {
-                    showSuccess('✅ API Connection Successful! Server is reachable and CORS is working. (404/405 is expected for GET request)');
-                } else if (response.ok) {
-                    showSuccess('✅ API Connection Successful! Backend is reachable and CORS is working.');
-                } else {
-                    showWarning(`⚠️ Server responded with status ${response.status}. But connection is working.`);
-                }
-            } catch (error) {
-                console.error('❌ API connection test failed:', error);
-                showError(`❌ Connection Failed: ${error.message}. This is a CORS issue or the backend is unreachable.`);
-            } finally {
-                testBtn.disabled = false;
-                testBtn.textContent = '🔌 Test API Connection';
-            }
-        }
-
-        // Username validation on input
-        document.getElementById('username').addEventListener('input', function(e) {
-            const value = e.target.value;
-            const valid = /^[a-zA-Z0-9_-]*$/.test(value);
-            
-            if (!valid && value.length > 0) {
-                e.target.setCustomValidity('Only letters, numbers, hyphens, and underscores allowed');
-            } else {
-                e.target.setCustomValidity('');
-            }
-        });
-
-        // Ethereum address validation and checksumming on input
+        // Ethereum address validation with visual feedback
         document.getElementById('ethereumAddress').addEventListener('input', function(e) {
             const value = e.target.value.trim();
-            const checksumDisplay = document.getElementById('checksummedAddress');
-            const checksumValue = document.getElementById('checksummedValue');
             
-            console.log('📝 Address input changed:', value);
-            
-            if (value.length === 42 && value.startsWith('0x')) {
-                // Check if it's valid hex
-                if (/^0x[0-9a-fA-F]{40}$/.test(value)) {
-                    // If ethers.js loaded, try to validate and checksum
-                    if (typeof ethers !== 'undefined' && ethers.utils && ethers.utils.getAddress) {
-                        try {
-                            const checksummed = ethers.utils.getAddress(value);
-                            checksumValue.textContent = checksummed;
-                            checksumDisplay.style.display = 'block';
-                            e.target.setCustomValidity('');
-                            console.log('✅ Valid address (ethers.js), checksummed:', checksummed);
-                        } catch (error) {
-                            checksumDisplay.style.display = 'none';
-                            checksumValue.textContent = value;
-                            checksumDisplay.style.display = 'block';
-                            e.target.setCustomValidity('');
-                            console.log('⚠️ Address format valid, but may not be properly checksummed:', value);
-                        }
-                    } else {
-                        // Fallback: just show the address and mark as valid
-                        checksumValue.textContent = value;
-                        checksumDisplay.style.display = 'block';
-                        e.target.setCustomValidity('');
-                        console.log('✅ Valid address format (no ethers.js):', value);
-                    }
-                } else {
-                    checksumDisplay.style.display = 'none';
-                    e.target.setCustomValidity('Invalid characters - must be hex (0-9, a-f, A-F)');
-                }
+            if (value.length === 42 && /^0x[a-fA-F0-9]{40}$/.test(value)) {
+                e.target.style.borderColor = '#10b981';
+            } else if (value.length > 0) {
+                e.target.style.borderColor = '#ef4444';
             } else {
-                checksumDisplay.style.display = 'none';
-                if (value.length > 0 && !value.startsWith('0x')) {
-                    e.target.setCustomValidity('Ethereum address must start with 0x');
-                } else if (value.length > 0 && value.length < 42) {
-                    e.target.setCustomValidity('Ethereum address must be 42 characters (0x + 40 hex)');
-                } else if (value.length > 42) {
-                    e.target.setCustomValidity('Ethereum address is too long (should be 42 characters)');
-                } else {
-                    e.target.setCustomValidity('');
-                }
+                e.target.style.borderColor = '#e0e0e0';
             }
         });
 
-        // Also handle paste events
-        document.getElementById('ethereumAddress').addEventListener('paste', function(e) {
-            setTimeout(() => {
-                e.target.dispatchEvent(new Event('input'));
-            }, 10);
+        // Campaign funds validation
+        document.getElementById('campaignFunds').addEventListener('input', function(e) {
+            const value = parseFloat(e.target.value);
+            
+            if (value >= 0.01) {
+                e.target.style.borderColor = '#10b981';
+            } else if (e.target.value.length > 0) {
+                e.target.style.borderColor = '#ef4444';
+            } else {
+                e.target.style.borderColor = '#e0e0e0';
+            }
         });
     </script>
 </body>
