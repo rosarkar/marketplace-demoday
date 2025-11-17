@@ -1,12 +1,50 @@
-# Canvas Protocol - Complete API Reference for Frontend
+# Canvas Protocol
 
-**All API calls made by frontend files**  
-**Base URL:** `http://localhost:8080` (configurable in each file)  
-**Last Updated:** November 15, 2025
+## Deployment
 
----
+Backend Code (deployed to EigenCompute) - https://github.com/souradeep-das/canvasProtocol
 
-## 📊 Quick Overview
+### EigenCompute Deployment
+2025/11/17 11:34:54 App Name: canvasprotocol \
+2025/11/17 11:34:54 App ID: 0x85578B7E6A0Ee0449448059176a03793eD290f6d \
+2025/11/17 11:34:54 Latest Release Time: 2025-11-16 21:29:48 \
+2025/11/17 11:34:54 Status: Running \
+2025/11/17 11:34:54 Instance: g1-standard-4t \
+2025/11/17 11:34:54 IP: 34.75.24.60 \
+2025/11/17 11:34:54 EVM Address: 0xe313E052009503A232A4C369B1200497602dE3F9 (path: m/44'/60'/0'/0/0) \
+2025/11/17 11:34:54 Solana Address: 8SJ6hakH4iaCx7h3iHTC7SmAEzBxSALJsQiSmuQAdyd8 (path: m/44'/501'/0'/0')
+
+The EigenCompute App is available at https://canvas-api.duckdns.org (34.75.24.60:8080)
+
+### Run locally
+
+```
+$ npm install
+$ npm build
+$ npm run dev
+```
+
+## Process
+The backend code is here: [https://github.com/rosarkar/marketplace-demoday](https://github.com/souradeep-das/canvasProtocol)
+1. Register a Publisher on the Canvas Protocol, upon registration you would be able to access the publisher dashboard
+2. Register an Advertiser on the Canvas Protocol, upon registration you would be able to access the advertiser dashboard
+3. Send funds from the Advertiser wallet address to the EigenCompute image address (0xe313E052009503A232A4C369B1200497602dE3F9) to auto load funds for the advertisers campagin funds
+4. The Advertiser can then use the deposited funds to start campaigns.
+5. Upon starting a campaign, the Advertiser can view analytics for the performance of their campaign. Publishers available and without an active advertiser campaign is auto-matched with this campaign.
+6. Everytime a new-user goes to the publishers website (within a fixed period of tiem, they are shown a captcha minigame. Metrics involving behavioral, usage, and game completion are stored through EigenCompute,
+7. such that these analytical metrics could be used to determine wethere a captcha was solved by human and quantify how much attention it accrued.
+8. Both the Advertiser and the publsiher can continue to view their dashboard which indicates the amounts spent in the campagin, and the amounts earned respectively.
+9. The publisher can withdraw the accrued funds anytime to their wallet.
+
+## Tech Stack
+- EigenCompute
+- Supabase for db
+- DuckDNS for TLS, and SSL certificates
+
+
+
+
+## 📊 API Reference: Quick Overview
 
 | File | API Calls | Purpose |
 |------|-----------|---------|
